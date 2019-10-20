@@ -5,6 +5,7 @@ import processing.core.PApplet;
 public class App extends PApplet {
     private final static int LEFT_BOUNDARY = 180;
     private final static int RIGHT_BOUNDARY = 460;
+    private boolean win, lose;
     private boolean isDataLoaded;
     private int players;
     private Tank[] tanks;
@@ -12,18 +13,50 @@ public class App extends PApplet {
     private Invader[][] invaders;
     private boolean left, right, space, W, A, D;
     private int frameOfLastPress, nOfSteps, frameOfWin;
-    private boolean win, lose;
 
 
     public static void main(String[] args) {
         PApplet.main("invadem.App");
     }
 
+    /**
+     *  Initialize players, tanks, barriers, invaders and projectiles
+     */
+    public void loadData() {
+        // init all objects on the screen
+        AbstractObject.setPApplet(this);
+        // init the tank
+        if (players == 1) {
+            tanks = new Tank[1];
+        } else {
+            tanks = new Tank[2];
+            tanks[1] = new Tank(2, width / 2 - 50, height - 30);
+        }
+        tanks[0] = new Tank(1, width / 2, height - 30);
+
+
+        // init barriers
+        barriers = new Barrier[3];
+        loadBarriers();
+        // load invaders
+        invaders = new Invader[4][10];
+        loadInvaders();
+
+        isDataLoaded = true;
+    }
+
+    /**
+     * set the size of the window
+     */
     @Override
     public void settings() {
         size(640, 480);
     }
 
+
+    /**
+     * Initialize the window
+     */
     @Override
     public void setup() {
         // init windows
@@ -38,6 +71,9 @@ public class App extends PApplet {
 
     }
 
+    /**
+     * show objects on the window
+     */
     @Override
     public void draw() {
         background(0);
@@ -78,6 +114,9 @@ public class App extends PApplet {
 
     }
 
+    /**
+     * detect the number of players the user choose
+     */
     @Override
     public void mouseClicked() {
         if (mouseX > 210 && mouseX < 310 && mouseY > 240 && mouseY < 280) {
@@ -90,6 +129,10 @@ public class App extends PApplet {
 
     }
 
+
+    /**
+     * control tanks
+     */
     @Override
     public void keyPressed() {
         if (key == CODED) {
@@ -127,6 +170,9 @@ public class App extends PApplet {
 
     }
 
+    /**
+     * control tanks
+     */
     @Override
     public void keyReleased() {
         if (key == CODED) {
@@ -156,29 +202,80 @@ public class App extends PApplet {
         }
     }
 
-    public void loadData() {
-        // init all objects on the screen
-        AbstractObject.setPApplet(this);
-        // init the tank
-        if (players == 1) {
-            tanks = new Tank[1];
-        } else {
-            tanks = new Tank[2];
-            tanks[1] = new Tank(2, width / 2 - 50, height - 30);
+    /**
+     * check whether the projectile collide barrier, tank or invader
+     * @param object check whether the object collide other objects
+     */
+    private void checkCollision(AbstractObject object) {
+        if (!object.isAlive()) {
+            return;
         }
-        tanks[0] = new Tank(1, width / 2, height - 30);
 
+        // if shooter is true, the object is of tank. Otherwise, it's of invader
+        ObjectEnum name = object.getName();
 
-        // init barriers
-        barriers = new Barrier[3];
-        loadBarriers();
-        // load invaders
-        invaders = new Invader[4][10];
-        loadInvaders();
+        // the INVADER_PROJECTILE can hit the tank
+        if (name == ObjectEnum.INVADER_Projectile) {
+            for (int i = 0; i < players; i++) {
+                Tank tank = tanks[i];
+                if (object.collides(tank)) {
+                    tank.isHit();
+                    tank.boom(true);
+                    tank.getHearts()[tank.getBlood()].isHit();
+                    object.isHit();
+                }
+            }
 
-        isDataLoaded = true;
+        }
+        // the TANK_PROJECTILE can hit the invader
+        if (name == ObjectEnum.TANK_Projectile) {
+            for (Invader[] invaderCol : invaders) {
+                for (Invader invader : invaderCol) {
+                    if (invader.isAlive() && object.collides(invader)) {
+                        invader.isHit();
+                        object.isHit();
+                        ifWon();
+                    }
+                }
+            }
+        }
+        // the TANK_PROJECTILE, INVADER_PROJECTILE and INVADER can hit barrier
+        for (Barrier barrier : barriers) {
+            for (Block block : barrier.getBlocks()) {
+                if (block.isAlive() && object.collides(block)) {
+                    if (name == ObjectEnum.INVADER) {
+                        lose = true;
+                        return;
+                    }
+                    block.isHit();
+                    object.isHit();
+                }
+            }
+        }
+
     }
 
+
+    /**
+     * load the Choose Player objects
+     */
+    private void choosePlayers() {
+        fill(0, 153, 0);
+        rect(210, 240, 100, 40, 7);
+        rect(340, 240, 100, 40, 7);
+        fill(255, 255, 255);
+        textSize(20);
+        text("Select Number of Players", 200, 220);
+        text("1 Player", 220, 265);
+        text("2 Players", 350, 265);
+
+
+    }
+
+
+    /**
+     * display and move invaders and its projectiles, and then make them fire
+     */
     private void displayInvaders() {
         for (Invader[] invaderCol : invaders) {
             for (Invader invader : invaderCol) {
@@ -203,21 +300,11 @@ public class App extends PApplet {
         invaderShoot();
     }
 
-    private void choosePlayers() {
-        fill(0, 153, 0);
-        rect(210, 240, 100, 40, 7);
-        rect(340, 240, 100, 40, 7);
-        fill(255, 255, 255);
-        textSize(20);
-        text("Select Number of Players", 200, 220);
-        text("1 Player", 220, 265);
-        text("2 Players", 350, 265);
-
-
-    }
-
+    /**
+     * @return // if any tank is not alive, return true
+     */
     private boolean displayTanks() {
-        // if any tank is not alive, return true
+
         for (int i = 0; i < players; i++) {
             Tank tank = tanks[i];
             if (!tank.isAlive()) {
@@ -247,30 +334,9 @@ public class App extends PApplet {
         return false;
     }
 
-    private void invaderShoot() {
-        if (frameCount == 1 || frameCount % 301 == 0) {
-            Invader invader;
-
-            // if the invader is alive and it's in the range of tank movement
-            do {
-                invader = invaders[(int) random(4)][(int) random(10)];
-            } while (!invader.isAlive() && invader.getX() > LEFT_BOUNDARY && invader.getX() < RIGHT_BOUNDARY - invader.getWidth());
-            invader.getProjectiles().add(invader.shoot());
-
-
-        }
-    }
-
-    private void won() {
-        int time = (frameCount - frameOfWin) / 60;
-        if (time < 2) {
-            image(loadImage("../resources/nextlevel.png"), LEFT_BOUNDARY + 100, height / 2);
-        } else {
-            win = false;
-            loadData();
-        }
-    }
-
+    /**
+     * detect if the user wins
+     */
     private void ifWon() {
         for (Invader[] invaderCol : invaders) {
             for (Invader invader : invaderCol) {
@@ -285,12 +351,38 @@ public class App extends PApplet {
 
     }
 
+
+    /**
+     * make invaders fire
+     */
+    private void invaderShoot() {
+        if (frameCount == 1 || frameCount % 301 == 0) {
+            Invader invader;
+
+            // if the invader is alive and it's in the range of tank movement
+            do {
+                invader = invaders[(int) random(4)][(int) random(10)];
+            } while (!invader.isAlive() && invader.getX() > LEFT_BOUNDARY && invader.getX() < RIGHT_BOUNDARY - invader.getWidth());
+            invader.getProjectiles().add(invader.shoot());
+
+
+        }
+    }
+
+
+    /**
+     * create objects of Barriers
+     */
     private void loadBarriers() {
         barriers[0] = new Barrier(LEFT_BOUNDARY + 20, 416);
         barriers[1] = new Barrier(width / 2 - Barrier.getWidth() / 2, 416);
         barriers[2] = new Barrier(RIGHT_BOUNDARY - 20 - Barrier.getWidth(), 416);
     }
 
+
+    /**
+     * create objects of invaders
+     */
     private void loadInvaders() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 10; j++) {
@@ -299,6 +391,9 @@ public class App extends PApplet {
         }
     }
 
+    /**
+     * control the movement of invaders
+     */
     private void moveInvaders() {
         boolean every2Frame = frameCount % 2 == 0;
         if (every2Frame) {
@@ -325,6 +420,9 @@ public class App extends PApplet {
 
     }
 
+    /**
+     * control the actions when keys pressed
+     */
     private void readKeys() {
         // movement of tank1
         if (left && tanks[0].getX() > LEFT_BOUNDARY) {
@@ -367,53 +465,18 @@ public class App extends PApplet {
 
     }
 
-    private void checkCollision(AbstractObject object) {
-        if (!object.isAlive()) {
-            return;
-        }
 
-        // if shooter is true, the object is of tank. Otherwise, it's of invader
-        ObjectEnum name = object.getName();
-
-        // the INVADER_PROJECTILE can hit the tank
-        if (name == ObjectEnum.INVADER_Projectile) {
-            for (int i = 0; i < players; i++) {
-                Tank tank = tanks[i];
-                if (object.collides(tank)) {
-                    tank.isHit();
-                    tank.boom(true);
-                    tank.getHearts()[tank.getBlood()].isHit();
-                    object.isHit();
-                }
-            }
-
+    /**
+     * display Next Level when wining
+     */
+    private void won() {
+        int time = (frameCount - frameOfWin) / 60;
+        if (time < 2) {
+            image(loadImage("../resources/nextlevel.png"), LEFT_BOUNDARY + 100, height / 2);
+        } else {
+            win = false;
+            loadData();
         }
-        // the TANK_PROJECTILE can hit the invader
-        if (name == ObjectEnum.TANK_Projectile) {
-            for (Invader[] invaderCol : invaders) {
-                for (Invader invader : invaderCol) {
-                    if (invader.isAlive() && object.collides(invader)) {
-                        invader.isHit();
-                        object.isHit();
-                        ifWon();
-                    }
-                }
-            }
-        }
-        // the TANK_PROJECTILE, INVADER_PROJECTILE and INVADER can hit barrier
-        for (Barrier barrier : barriers) {
-            for (Component component : barrier.getComponents()) {
-                if (component.isAlive() && object.collides(component)) {
-                    if (name == ObjectEnum.INVADER) {
-                        lose = true;
-                        return;
-                    }
-                    component.isHit();
-                    object.isHit();
-                }
-            }
-        }
-
     }
 
 }

@@ -2,6 +2,9 @@ package invadem;
 
 import processing.core.PImage;
 
+/**
+ * the invaders
+ */
 public class Invader extends AbstractObject {
     private static int dx = 1;
 
@@ -14,11 +17,24 @@ public class Invader extends AbstractObject {
         currentSpriteIndex = 0;
     }
 
+    /**
+     * change its direction horizontally if move 30 steps
+     */
+    public static void reverseDir() {
+        dx *= -1;
+    }
+
+    /**
+     * move 1 step horizontally
+     */
     public void moveHoriz() {
         currentSpriteIndex = 0;
         x += dx;
     }
 
+    /**
+     * move 1 step down
+     */
     public void moveDown() {
         currentSpriteIndex = 1;
         int dy = 1;
@@ -26,10 +42,9 @@ public class Invader extends AbstractObject {
 
     }
 
-    public static void reverseDir() {
-        dx *= -1;
-    }
-
+    /**
+     * @return shoot a projectile
+     */
     public Projectile shoot() {
         return new Projectile(ObjectEnum.INVADER_Projectile, x, y, 1);
 

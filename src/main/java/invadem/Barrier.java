@@ -1,9 +1,12 @@
 package invadem;
 
+/**
+ * assemble the blocks of barriers
+ */
 public class Barrier {
     private static int width = 24;
     private static int height = 24;
-    private Component[] components;
+    private Block[] blocks;
     private int x;
     private int y;
 
@@ -11,38 +14,53 @@ public class Barrier {
         // (x,y) is the top-left corner
         this.x = x;
         this.y = y;
-        components = new Component[7];
-        loadComponents();
+        blocks = new Block[7];
+        loadBlocks();
 
     }
 
-    private void loadComponents() {
-        components[0] = new Component(ComponentEnum.SOLID, x, y + 16);
-        components[1] = new Component(ComponentEnum.SOLID, x, y + 8);
-        components[2] = new Component(ComponentEnum.LEFT, x, y);
-        components[3] = new Component(ComponentEnum.TOP, x + 8, y);
-        components[4] = new Component(ComponentEnum.RIGHT, x + 16, y);
-        components[5] = new Component(ComponentEnum.SOLID, x + 16, y + 8);
-        components[6] = new Component(ComponentEnum.SOLID, x + 16, y + 16);
+    /**
+     * create the objects of blocks
+     */
+    private void loadBlocks() {
+        blocks[0] = new Block(BlockEnum.SOLID, x, y + 16);
+        blocks[1] = new Block(BlockEnum.SOLID, x, y + 8);
+        blocks[2] = new Block(BlockEnum.LEFT, x, y);
+        blocks[3] = new Block(BlockEnum.TOP, x + 8, y);
+        blocks[4] = new Block(BlockEnum.RIGHT, x + 16, y);
+        blocks[5] = new Block(BlockEnum.SOLID, x + 16, y + 8);
+        blocks[6] = new Block(BlockEnum.SOLID, x + 16, y + 16);
     }
 
+    /**
+     * display the barrier
+     */
     public void display() {
-        for (Component bc : components) {
+        for (Block bc : blocks) {
             if (bc.isAlive()) {
                 bc.display();
             }
         }
     }
 
+    /**
+     * @return width of the barrier
+     */
     public static int getWidth() {
         return width;
     }
 
+    /**
+     * @return height of the barrier
+     */
     public static int getHeight() {
         return height;
     }
 
-    public Component[] getComponents() {
-        return components;
+    /**
+     * @return the array of blocks
+     */
+    public Block[] getBlocks() {
+        return blocks;
     }
 }

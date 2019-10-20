@@ -2,6 +2,10 @@ package invadem;
 
 import processing.core.PImage;
 
+
+/**
+ * projectiles fired by invaders and tanks
+ */
 public class Projectile extends AbstractObject {
     private int dy;
 
@@ -13,6 +17,9 @@ public class Projectile extends AbstractObject {
         currentSpriteIndex = 0;
     }
 
+    /**
+     * move down of up depends on dy
+     */
     public void move() {
         this.y += dy;
     }

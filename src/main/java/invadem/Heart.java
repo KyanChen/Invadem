@@ -2,6 +2,10 @@ package invadem;
 
 import processing.core.PImage;
 
+
+/**
+ * display the blood of tanks
+ */
 public class Heart extends AbstractObject {
 
     public Heart(ObjectEnum name, int x, int y) {
@@ -12,6 +16,9 @@ public class Heart extends AbstractObject {
         currentSpriteIndex = 1;
     }
 
+    /**
+     * deduct bloods and change it sprite
+     */
     @Override
     public void isHit() {
         if (blood > 0) {
