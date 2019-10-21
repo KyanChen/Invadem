@@ -1,26 +1,41 @@
 package invadem;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import processing.core.PApplet;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TankTest {
 
-//    @Test
-//    public void testTankConstruction() {
-//        TANK tank = new TANK(null, 0, 0);
-//        assertNotNull(tank);
-//    }
+    @BeforeClass
+    public static void setUp() {
+        PApplet p = new PApplet(){
+            public void settings() {
+                size(640,480);
+            }
+        };
 
-//    @Test
-//    public void testTankProjectile() {
-//        TANK tank = new TANK(null, 0, 0);
-//        assertNotNull(tank.fire());
-//    }
+        AbstractObject.setPApplet(p);
+    }
 
-//    @Test
-//    public void testTankIsNotDead() {
-//        TANK tank = new TANK(null, 0, 0);
-//        assertEquals(true, tank.isDead());
-//    }
+    @Test
+    public void testTankConstruction() {
+        Tank tank = new Tank(1, 340, 450);
+        assertNotNull(tank);
+    }
+
+    @Test
+    public void testTankIsNotDead() {
+        Tank tank = new Tank(1, 340, 450);
+        assertTrue(tank.isAlive());
+    }
+
+    @Test
+    public void testTankProjectile() {
+        Tank tank = new Tank(1, 340, 450);
+        assertNotNull(tank.fire());
+    }
 
 }

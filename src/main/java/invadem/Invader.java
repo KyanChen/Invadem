@@ -17,6 +17,10 @@ public class Invader extends AbstractObject {
         currentSpriteIndex = 0;
     }
 
+    public static void setDx(int dx) {
+        Invader.dx = dx;
+    }
+
     /**
      * change its direction horizontally if move 30 steps
      */
@@ -40,12 +44,13 @@ public class Invader extends AbstractObject {
         int dy = 1;
         y += dy;
 
+
     }
 
     /**
-     * @return shoot a projectile
+     * @return fire a projectile
      */
-    public Projectile shoot() {
+    public Projectile fire() {
         return new Projectile(ObjectEnum.INVADER_Projectile, x, y, 1);
 
     }

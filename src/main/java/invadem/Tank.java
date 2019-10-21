@@ -21,7 +21,6 @@ public class Tank extends AbstractObject {
         tanks = new PImage[2][2];
         loadImages();
         sprites = tanks[player - 1];
-
         hearts = new Heart[3];
         loadHearts();
 
@@ -55,7 +54,7 @@ public class Tank extends AbstractObject {
     /**
      * @return fire and return the projectile
      */
-    public Projectile shoot() {
+    public Projectile fire() {
         return new Projectile(ObjectEnum.TANK_Projectile, x + width / 2, y, -1);
 
     }

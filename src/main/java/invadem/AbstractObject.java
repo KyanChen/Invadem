@@ -3,9 +3,6 @@ package invadem;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * the parent class of Heart, Invader, Projectile, Tank and Block
  */
@@ -19,7 +16,6 @@ public abstract class AbstractObject {
     protected PImage[] sprites;
     protected int currentSpriteIndex;
     protected int blood;
-    private List<Projectile> projectiles;
 
 
     public AbstractObject(ObjectEnum name, int x, int y, int blood, int width, int height) {
@@ -29,26 +25,10 @@ public abstract class AbstractObject {
         this.blood = blood;
         this.width = width;
         this.height = height;
-        projectiles = new ArrayList<>();
 
     }
 
-    /**
-     * check if this object collides another one
-     * @param object the object which maybe collided
-     * @return whether the object is collided
-     */
-    public boolean collides(AbstractObject object) {
-        int ObjWidth = object.getWidth();
-        int ObjHeight = object.getHeight();
-        int ObjX = object.getX();
-        int ObjY = object.getY();
-        return (x < ObjX + ObjWidth)
-                && (x + width > ObjX)
-                && (y < ObjY + ObjHeight)
-                && (y + height > ObjY);
 
-    }
 
     /**
      * @return width of the object
@@ -120,10 +100,4 @@ public abstract class AbstractObject {
         return name;
     }
 
-    /**
-     * @return List of projectiles of this object
-     */
-    public List<Projectile> getProjectiles() {
-        return projectiles;
-    }
 }

@@ -24,5 +24,21 @@ public class Projectile extends AbstractObject {
         this.y += dy;
     }
 
+    /**
+     * check if this object collides another one
+     * @return whether the object is collided
+     */
+    public boolean collides(AbstractObject object) {
+        int ObjWidth = object.getWidth();
+        int ObjHeight = object.getHeight();
+        int ObjX = object.getX();
+        int ObjY = object.getY();
+        return (x < ObjX + ObjWidth)
+                && (x + width > ObjX)
+                && (y < ObjY + ObjHeight)
+                && (y + height > ObjY);
+
+    }
+
 
 }
