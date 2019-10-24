@@ -4,11 +4,10 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
- * the parent class of Heart, Invader, Projectile, Tank and Block
+ * the parent class of Heart, Invader, Projectile, AbstractTank and Block
  */
 public abstract class AbstractObject {
     protected static PApplet p;
-    protected ObjectEnum name;
     protected int width;
     protected int height;
     protected int x;
@@ -16,10 +15,10 @@ public abstract class AbstractObject {
     protected PImage[] sprites;
     protected int currentSpriteIndex;
     protected int blood;
+    protected boolean imageLoaded;
 
 
-    public AbstractObject(ObjectEnum name, int x, int y, int blood, int width, int height) {
-        this.name = name;
+    public AbstractObject(int x, int y, int blood, int width, int height) {
         this.x = x;
         this.y = y;
         this.blood = blood;
@@ -28,7 +27,31 @@ public abstract class AbstractObject {
 
     }
 
+    public abstract void loadImages();
 
+    /**
+     * display the object
+     */
+    public void display() {
+        if (!imageLoaded) {
+            loadImages();
+        }
+        p.image(sprites[currentSpriteIndex], x, y);
+    }
+
+    /**
+     * deduct the blood
+     */
+    public void isHit() {
+        blood--;
+    }
+
+    /**
+     * @param pApplet the PApplet object where to display objects
+     */
+    public static void setPApplet(PApplet pApplet) {
+        p = pApplet;
+    }
 
     /**
      * @return width of the object
@@ -59,27 +82,6 @@ public abstract class AbstractObject {
     }
 
     /**
-     * display the object
-     */
-    public void display() {
-        p.image(sprites[currentSpriteIndex], x, y);
-    }
-
-    /**
-     * deduct the blood
-     */
-    public void isHit() {
-        blood--;
-    }
-
-    /**
-     * @param pApplet the PApplet object where to display objects
-     */
-    public static void setPApplet(PApplet pApplet) {
-        p = pApplet;
-    }
-
-    /**
      * @return true if bloods are greater than 0
      */
     public boolean isAlive() {
@@ -93,11 +95,7 @@ public abstract class AbstractObject {
         return blood;
     }
 
-    /**
-     * @return the type of the object
-     */
-    public ObjectEnum getName() {
-        return name;
+    public int getCurrentSpriteIndex() {
+        return currentSpriteIndex;
     }
-
 }

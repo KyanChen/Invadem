@@ -10,15 +10,9 @@ public class Invader extends AbstractObject {
 
 
     public Invader(int x, int y) {
-        super(ObjectEnum.INVADER, x, y, 1, 16, 16);
-        sprites = new PImage[2];
-        sprites[0] = p.loadImage("../resources/invader1.png");
-        sprites[1] = p.loadImage("../resources/invader2.png");
-        currentSpriteIndex = 0;
-    }
+        super(x, y, 1, 16, 16);
 
-    public static void setDx(int dx) {
-        Invader.dx = dx;
+
     }
 
     /**
@@ -29,11 +23,20 @@ public class Invader extends AbstractObject {
     }
 
     /**
-     * move 1 step horizontally
+     * @return fire a projectile
      */
-    public void moveHoriz() {
+    public Projectile fire() {
+        return new Projectile("invader",x, y, 1);
+
+    }
+
+    @Override
+    public void loadImages() {
+        sprites = new PImage[2];
+        sprites[0] = p.loadImage("src/main/resources/invader1.png");
+        sprites[1] = p.loadImage("src/main/resources/invader2.png");
         currentSpriteIndex = 0;
-        x += dx;
+        imageLoaded = true;
     }
 
     /**
@@ -48,11 +51,15 @@ public class Invader extends AbstractObject {
     }
 
     /**
-     * @return fire a projectile
+     * move 1 step horizontally
      */
-    public Projectile fire() {
-        return new Projectile(ObjectEnum.INVADER_Projectile, x, y, 1);
+    public void moveHoriz() {
+        currentSpriteIndex = 0;
+        x += dx;
+    }
 
+    public static void setDx(int dx) {
+        Invader.dx = dx;
     }
 
 }

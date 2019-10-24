@@ -8,24 +8,17 @@ import processing.core.PImage;
  */
 public class Projectile extends AbstractObject {
     private int dy;
+    private String owner;
 
-    public Projectile(ObjectEnum name, int x, int y, int dy) {
-        super(name, x, y, 1, 1, 3);
+    public Projectile(String owner, int x, int y, int dy) {
+        super(x, y, 1, 1, 3);
         this.dy = dy;
-        sprites = new PImage[1];
-        sprites[0] = p.loadImage("../resources/projectile.png");
-        currentSpriteIndex = 0;
-    }
-
-    /**
-     * move down of up depends on dy
-     */
-    public void move() {
-        this.y += dy;
+        this.owner = owner;
     }
 
     /**
      * check if this object collides another one
+     *
      * @return whether the object is collided
      */
     public boolean collides(AbstractObject object) {
@@ -38,6 +31,25 @@ public class Projectile extends AbstractObject {
                 && (y < ObjY + ObjHeight)
                 && (y + height > ObjY);
 
+    }
+
+    @Override
+    public void loadImages() {
+        sprites = new PImage[1];
+        sprites[0] = p.loadImage("src/main/resources/projectile.png");
+        currentSpriteIndex = 0;
+        imageLoaded = true;
+    }
+
+    /**
+     * move down of up depends on dy
+     */
+    public void move() {
+        this.y += dy;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
 

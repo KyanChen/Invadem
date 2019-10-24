@@ -10,13 +10,13 @@ public class App extends PApplet {
     private final static int LEFT_BOUNDARY = 180;
     private final static int RIGHT_BOUNDARY = 460;
     private boolean isDataLoaded, ifLose, ifWon;
-    private int nOfplayers;
-    private Tank[] tanks;
+    private int nOfplayers, level;
+    private AbstractTank[] tanks;
     private Barrier[] barriers;
     private List<Invader> invaders;
     private List<Projectile> projectiles;
-    private boolean left, right, space, W, A, D;
-    private int frameOfLastPress, nOfSteps, frameOfWin, gameStart;
+    private boolean left, right, spaceReleased, a, d, wReleased;
+    private int nOfSteps, frameOfWin, gameStart;
     private double gameTime;
 
 
@@ -41,10 +41,11 @@ public class App extends PApplet {
         background(0);
         surface.setTitle("Invadem");
         frameRate(60);
-        frameOfLastPress = 0;
         nOfSteps = 0;
         isDataLoaded = false;
         nOfplayers = 0;
+        level = 1;
+        spaceReleased = true;
 
 
     }
@@ -55,9 +56,6 @@ public class App extends PApplet {
     @Override
     public void draw() {
         background(0);
-        stroke(255);
-        line(LEFT_BOUNDARY, 0, LEFT_BOUNDARY, 480);
-        line(RIGHT_BOUNDARY, 0, RIGHT_BOUNDARY, 480);
 
         // ask the users to select the number of nOfplayers
         if (nOfplayers == 0) {
@@ -72,11 +70,15 @@ public class App extends PApplet {
 
 
         if (ifLose) {
-            image(loadImage("../resources/gameover.png"), LEFT_BOUNDARY + 100, height / 2);
+            image(loadImage("src/main/resources/gameover.png"), LEFT_BOUNDARY + 100, height / 2);
         } else if (ifWon) {
             displayNextLevel();
         } else {
+            // display the game time in second
             getGameTime();
+            // display levels
+            text("Level: " + level, 550, 25);
+
             // the user inputs to control the tank
             readKeys();
 
@@ -96,7 +98,7 @@ public class App extends PApplet {
     }
 
     /**
-     * Initialize nOfplayers, tanks, barriers, invaders and projectiles
+     * Initialize nOfplayers, abstractTanks, barriers, invaders and projectiles
      */
     public void loadData() {
         // init all objects on the screen
@@ -123,16 +125,14 @@ public class App extends PApplet {
     }
 
     /**
-     * Initialize tanks the the number of that depends on the number of nOfplayers
+     * Initialize abstractTanks the the number of that depends on the number of nOfplayers
      */
     private void loadTanks() {
-        if (nOfplayers == 1) {
-            tanks = new Tank[1];
-        } else {
-            tanks = new Tank[2];
-            tanks[1] = new Tank(2, width / 2 - 50, height - 30);
+        tanks = new AbstractTank[2];
+        if (nOfplayers == 2) {
+            tanks[1] = new Tank2(width / 2 - 50, height - 30);
         }
-        tanks[0] = new Tank(1, width / 2, height - 30);
+        tanks[0] = new Tank1(width / 2, height - 30);
     }
 
     /**
@@ -158,14 +158,14 @@ public class App extends PApplet {
         Invader.setDx(1);
 
 
-
     }
 
     public void checkSituation() {
         if (invaders.size() == 0) {
             ifWon = true;
             frameOfWin = frameCount;
-        }else{
+        } else {
+
             Invader lowestInvader = invaders.get(invaders.size() - 1);
             if (lowestInvader.getY() + lowestInvader.getHeight() > 406) {
                 ifLose = true;
@@ -173,7 +173,8 @@ public class App extends PApplet {
         }
 
         for (int i = 0; i < nOfplayers; i++) {
-            if (!tanks[i].isAlive()) {
+            AbstractTank tank = tanks[i];
+            if (!tank.isAlive()) {
                 ifLose = true;
             }
         }
@@ -202,15 +203,15 @@ public class App extends PApplet {
      * @param projectile check whether the projectile collide other objects
      */
     private boolean checkCollision(Projectile projectile) {
-        ObjectEnum projectileType = projectile.getName();
+        String owner = projectile.getOwner();
 
         // the INVADER_PROJECTILE can hit the tank
-        if (projectileType == ObjectEnum.INVADER_Projectile) {
+        if ("invader".equals(owner)) {
             for (int i = 0; i < nOfplayers; i++) {
-                Tank tank = tanks[i];
+                AbstractTank tank = tanks[i];
                 if (projectile.collides(tank)) {
                     tank.isHit();
-                    tank.boom(true);
+                    tank.boom(true,frameCount);
                     tank.getHearts()[tank.getBlood()].isHit();
                     return true;
                 }
@@ -218,7 +219,7 @@ public class App extends PApplet {
 
         }
         // the TANK_PROJECTILE can hit the invader
-        if (projectileType == ObjectEnum.TANK_Projectile) {
+        if ("tank".equals(owner)) {
             Iterator<Invader> iterator = invaders.iterator();
             while (iterator.hasNext()) {
                 Invader invader = iterator.next();
@@ -232,7 +233,7 @@ public class App extends PApplet {
 
         // the TANK_PROJECTILE, INVADER_PROJECTILE and INVADER can hit barrier
         for (Barrier barrier : barriers) {
-            for (Block block : barrier.getBlocks()) {
+            for (AbstractBlock block : barrier.getBlocks()) {
                 if (block.isAlive() && projectile.collides(block)) {
                     block.isHit();
                     return true;
@@ -265,7 +266,7 @@ public class App extends PApplet {
     }
 
     /**
-     * Control tanks
+     * Control abstractTanks
      */
     @Override
     public void keyPressed() {
@@ -280,29 +281,37 @@ public class App extends PApplet {
         }
 
         // if press space key
-        if (key == 32) {
-            space = true;
+        if (key == 32 && spaceReleased) {
+            spaceReleased = false;
+            projectiles.add(tanks[0].fire());
         }
 
-        // if press A
-        if (key == 65 || key == 97) {
-            A = true;
+
+
+        if (nOfplayers == 2) {
+            // if press a
+            if (key == 65 || key == 97) {
+                a = true;
+            }
+
+            // if press d
+            if (key == 68 || key == 100) {
+                d = true;
+            }
+
+            // wReleased pressed
+            if ((key == 87 || key == 119) && wReleased) {
+                wReleased = false;
+                projectiles.add(tanks[1].fire());
+            }
+
         }
 
-        // if press D
-        if (key == 68 || key == 100) {
-            D = true;
-        }
-
-        // if press W
-        if (key == 87 || key == 119) {
-            W = true;
-        }
 
     }
 
     /**
-     * Control tanks
+     * Control abstractTanks
      */
     @Override
     public void keyReleased() {
@@ -316,19 +325,28 @@ public class App extends PApplet {
 
         }
 
-        // if press space key
         if (key == 32) {
-            space = false;
+            spaceReleased = true;
         }
-        if (key == 65 || key == 97) {
-            A = false;
+
+
+        if (nOfplayers == 2) {
+            // a pressed
+            if (key == 65 || key == 97) {
+                a = false;
+            }
+
+            // d pressed
+            if (key == 68 || key == 100) {
+                d = false;
+            }
         }
-        if (key == 68 || key == 100) {
-            D = false;
-        }
+
+        // wReleased pressed
         if (key == 87 || key == 119) {
-            W = false;
+            wReleased = true;
         }
+
     }
 
     /**
@@ -370,7 +388,7 @@ public class App extends PApplet {
             do {
                 int i = (int) random(invaders.size());
                 invader = invaders.get(i);
-            } while (invader.getX() < LEFT_BOUNDARY && invader.getX() > RIGHT_BOUNDARY - invader.getWidth());
+            } while (invader.getX() < LEFT_BOUNDARY || invader.getX() > RIGHT_BOUNDARY - invader.getWidth());
 
             projectiles.add(invader.fire());
 
@@ -382,7 +400,7 @@ public class App extends PApplet {
      * Control the movement of invaders
      */
     private void invadersMove() {
-        boolean every2Frame = (frameCount-gameStart) % 2 == 0;
+        boolean every2Frame = (frameCount - gameStart) % 2 == 0;
         if (every2Frame) {
             for (Invader invader : invaders) {
                 if (nOfSteps < 30) {
@@ -402,23 +420,18 @@ public class App extends PApplet {
     }
 
     private void displayTanks() {
-
         for (int i = 0; i < nOfplayers; i++) {
-            Tank tank = tanks[i];
-
+            AbstractTank tank = tanks[i];
             tank.display();
-            tank.boom(false);
-
-            // display their hearts
+            tank.boom(false,frameCount);
             stroke(255, 0, 0);
             textSize(13);
-            text("Player" + (i + 1), 2, 26 * (i + 1));
+            text("Player " + (i + 1), 2, 26 * (i + 1));
             for (Heart heart : tank.getHearts()) {
                 heart.display();
-
             }
-
         }
+
     }
 
     /**
@@ -433,32 +446,17 @@ public class App extends PApplet {
             tanks[0].moveRight();
         }
 
-        // fire 1 projectile every 10 frames at most
-        if (space) {
-            if (frameCount - frameOfLastPress > 10) {
-                projectiles.add(tanks[0].fire());
-                frameOfLastPress = frameCount;
-            }
-        }
 
         if (nOfplayers == 1) {
             return;
         }
         // movement of tanks2
 
-        if (A && tanks[1].getX() > LEFT_BOUNDARY) {
+        if (a && tanks[1].getX() > LEFT_BOUNDARY) {
             tanks[1].moveLeft();
         }
-        if (D && tanks[1].getX() < RIGHT_BOUNDARY - tanks[1].getWidth()) {
+        if (d && tanks[1].getX() < RIGHT_BOUNDARY - tanks[1].getWidth()) {
             tanks[1].moveRight();
-        }
-
-        // fire 1 projectile every 10 frames at most
-        if (W) {
-            if (frameCount - frameOfLastPress > 10) {
-                projectiles.add(tanks[1].fire());
-                frameOfLastPress = frameCount;
-            }
         }
 
 
@@ -470,9 +468,10 @@ public class App extends PApplet {
      */
     private void displayNextLevel() {
         if (frameCount - frameOfWin < 90) {
-            image(loadImage("../resources/nextlevel.png"), LEFT_BOUNDARY + 100, height / 2);
+            image(loadImage("src/main/resources/nextlevel.png"), LEFT_BOUNDARY + 100, height / 2);
         } else {
             isDataLoaded = false;
+            level++;
         }
 
 

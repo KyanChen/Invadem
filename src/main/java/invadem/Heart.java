@@ -8,12 +8,18 @@ import processing.core.PImage;
  */
 public class Heart extends AbstractObject {
 
-    public Heart(ObjectEnum name, int x, int y) {
-        super(name, x, y, 1, 24, 24);
+    public Heart(int x, int y) {
+        super(x, y, 1, 24, 24);
+
+    }
+
+    @Override
+    public void loadImages() {
         sprites = new PImage[2];
-        sprites[1] = p.loadImage("../resources/heart1.png");
-        sprites[0] = p.loadImage("../resources/heart2.png");
+        sprites[1] = p.loadImage("src/main/resources/heart1.png");
+        sprites[0] = p.loadImage("src/main/resources/heart2.png");
         currentSpriteIndex = 1;
+        imageLoaded = true;
     }
 
     /**

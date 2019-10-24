@@ -6,12 +6,14 @@ import static org.junit.Assert.*;
 
 public class InvaderTest {
 
-//    @Test
-//    public void testInvaderConstruction() {
-//        INVADER inv = /* Your Constructor Here */
-//        assertNotNull(inv);
+   @Test
+   public void testInvaderConstruction() {
+       // AbstractObject is the super class of Invader
+       AbstractObject.setPApplet(new App());
+       Invader inv = new Invader(50, 50);
+       assertNotNull(inv);
 
-//    }
+    }
 
 //    @Test
 //    public void testInvaderFireProjectile() {
