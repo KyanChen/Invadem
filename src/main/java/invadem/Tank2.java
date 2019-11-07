@@ -10,9 +10,9 @@ public class Tank2 extends AbstractTank {
 
     @Override
     public void loadHearts() {
-        hearts[0] = new Heart(50, 40);
-        hearts[1] = new Heart(90, 40);
-        hearts[2] = new Heart(130, 40);
+        hearts[0] = new Heart(20, 95);
+        hearts[1] = new Heart(60, 95);
+        hearts[2] = new Heart(100, 95);
     }
 
     @Override

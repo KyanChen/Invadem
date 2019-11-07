@@ -31,7 +31,7 @@ public abstract class AbstractTank extends AbstractObject {
             lastBoomFrame = frameCount;
             return;
         }
-        if (frameCount - lastBoomFrame > 30) {
+        if (frameCount - lastBoomFrame > 120) {
             currentSpriteIndex = 0;
         }
     }

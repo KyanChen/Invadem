@@ -8,7 +8,6 @@ import processing.core.PImage;
 public class Invader extends AbstractObject {
     private static int dx = 1;
 
-
     public Invader(int x, int y) {
         super(x, y, 1, 16, 16);
 
