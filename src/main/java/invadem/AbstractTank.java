@@ -19,13 +19,26 @@ public abstract class AbstractTank extends AbstractObject {
 
     }
 
-
     public abstract void loadHearts();
+
+    /**
+     * Initialize tanks and the number of that depends on the number of nOfplayers
+     *
+     * @param nOfplayers the number of players
+     */
+    public static AbstractTank[] loadTanks(int nOfplayers) {
+        AbstractTank[] tanks = new AbstractTank[2];
+        if (nOfplayers == 2) {
+            tanks[1] = new Tank2(320, 450);
+        }
+        tanks[0] = new Tank1(320, 450);
+        return tanks;
+    }
 
     /**
      * @param ifBoom whether or not show the boom effect
      */
-    public void boom(boolean ifBoom,int frameCount) {
+    public void boom(boolean ifBoom, int frameCount) {
         if (ifBoom) {
             currentSpriteIndex = 1;
             lastBoomFrame = frameCount;

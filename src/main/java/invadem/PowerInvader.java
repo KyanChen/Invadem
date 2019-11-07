@@ -13,7 +13,7 @@ public class PowerInvader extends Invader {
      */
     @Override
     public Projectile fire() {
-        return new PowerProjectile("invader",x, y, 1);
+        return new PowerProjectile("invader", x, y, 1);
 
     }
 

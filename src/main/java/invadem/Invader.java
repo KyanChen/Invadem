@@ -2,6 +2,9 @@ package invadem;
 
 import processing.core.PImage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * the invaders
  */
@@ -15,6 +18,34 @@ public class Invader extends AbstractObject {
     }
 
     /**
+     * initialize objects of invaders
+     */
+    public static List<Invader> loadInvaders(int LEFT_BOUNDARY) {
+        List<Invader> invaders = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 10; j++) {
+                int x = LEFT_BOUNDARY - 16 + 30 * j;
+                int y = 30 * (i + 1);
+                if (i == 0) {
+                    invaders.add(new ArmouredInvader(x, y));
+
+                } else if (i == 1) {
+                    invaders.add(new PowerInvader(x, y));
+
+                } else {
+                    invaders.add(new Invader(x, y));
+                }
+            }
+        }
+        setDx(1);
+        return invaders;
+    }
+
+    public static void setDx(int dx) {
+        Invader.dx = dx;
+    }
+
+    /**
      * change its direction horizontally if move 30 steps
      */
     public static void reverseDir() {
@@ -25,7 +56,7 @@ public class Invader extends AbstractObject {
      * @return fire a projectile
      */
     public Projectile fire() {
-        return new Projectile("invader",x, y, 1);
+        return new Projectile("invader", x, y, 1);
 
     }
 
@@ -55,10 +86,6 @@ public class Invader extends AbstractObject {
     public void moveHoriz() {
         currentSpriteIndex = 0;
         x += dx;
-    }
-
-    public static void setDx(int dx) {
-        Invader.dx = dx;
     }
 
 }

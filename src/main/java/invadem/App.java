@@ -16,7 +16,7 @@ public class App extends PApplet {
     private List<Invader> invaders;
     private List<Projectile> projectiles;
     private boolean left, right, spaceReleased, a, d, wReleased;
-    private int nOfSteps, frameOfWin, gameStart, frameofLose;
+    private int nOfSteps, frameOfWin, gameStart, frameOfLose;
     private double gameTime;
     private int highestScore, currentScore;
 
@@ -40,7 +40,7 @@ public class App extends PApplet {
     public void setup() {
         // init windows
         background(0);
-        textFont(createFont("src/main/resources/PressStart2P-Regular.ttf",12));
+        textFont(createFont("src/main/resources/PressStart2P-Regular.ttf", 12));
         surface.setTitle("Invadem");
         frameRate(60);
         nOfSteps = 0;
@@ -60,7 +60,6 @@ public class App extends PApplet {
     @Override
     public void draw() {
         background(0);
-
         // ask the users to select the number of nOfplayers
         if (nOfplayers == 0) {
             choosePlayers();
@@ -78,43 +77,98 @@ public class App extends PApplet {
         } else if (ifWon) {
             displayNextLevel();
         } else {
+            // the user inputs to control the tank
+            readKeys();
             // display the game time in second
             getGameTime();
             // display levels
-//            text("Level: " + level, 550, 25);
-
+            text("LEVEL: " + level, 350, 20);
+            // display highest and current score
             displayScore();
-
-            // the user inputs to control the tank
-            readKeys();
-
+            // display tanks
             displayTanks();
             // display barriers
-            for (Barrier b : barriers) {
-                b.display();
-            }
-            // display invaders
-            displayInvaders();
-            // invaders move
-            invadersMove();
-            // invader fire randomly
-            invadersFire();
-
+            displayBarriers();
+            // display invaders, make them move and fire
+            invadersUpdate();
             // display projectiles
             displayProjectiles();
-
+            // check whether the players win or lose
             checkSituation();
 
         }
     }
 
-    private void displayScore() {
-        text("HIGHEST: " + highestScore, 480,20);
-        text("CURRENT: " + currentScore, 10,20);
+    private void displayBarriers() {
+        // display barriers
+        for (Barrier b : barriers) {
+            b.display();
+        }
+    }
+
+    private void invadersUpdate() {
+        // display invaders
+        displayInvaders();
+        // invaders move
+        invadersMove();
+        // invader fire randomly
+        invadersFire();
     }
 
     /**
-     * Initialize nOfplayers, abstractTanks, barriers, invaders and projectiles
+     * Display invaders
+     */
+    private void displayInvaders() {
+        for (Invader invader : invaders) {
+            invader.display();
+        }
+    }
+
+    /**
+     * Make invaders fire
+     */
+    private void invadersFire() {
+        int rate = level < 6 ? 6 - level : 1;
+        if (gameTime % rate == 0) {
+            Invader invader;
+            // if the invader is in the range of tank movement
+            do {
+                int i = (int) random(invaders.size());
+                invader = invaders.get(i);
+            } while (invader.getX() < LEFT_BOUNDARY || invader.getX() > RIGHT_BOUNDARY - invader.getWidth());
+
+            projectiles.add(invader.fire());
+        }
+    }
+
+    /**
+     * Control the movement of invaders
+     */
+    private void invadersMove() {
+        boolean every2Frame = (frameCount - gameStart) % 2 == 0;
+        if (every2Frame) {
+            for (Invader invader : invaders) {
+                if (nOfSteps < 30) {
+                    invader.moveHoriz();
+                } else if (nOfSteps < 38) {
+                    invader.moveDown();
+
+                } else {
+                    Invader.reverseDir();
+                    nOfSteps = 0;
+                }
+            }
+            nOfSteps++;
+        }
+    }
+
+    private void displayScore() {
+        text("HIGHEST: " + highestScore, 480, 20);
+        text("CURRENT: " + currentScore, 10, 20);
+    }
+
+    /**
+     * Initialize data required for the next level or new game after game over
      */
     public void loadData() {
         // init all objects on the screen
@@ -123,99 +177,48 @@ public class App extends PApplet {
         ifLose = false;
         nOfSteps = 0;
         // init the tank
-        loadTanks();
-
+        tanks = AbstractTank.loadTanks(nOfplayers);
         // init barriers
-        loadBarriers();
-
+        barriers = Barrier.loadBarriers(LEFT_BOUNDARY, RIGHT_BOUNDARY);
         // init invaders
-        loadInvaders();
-
+        invaders = Invader.loadInvaders(LEFT_BOUNDARY);
         // init projectiles
         projectiles = new ArrayList<>();
-
         // update states
         gameStart = frameCount;
         isDataLoaded = true;
 
-
     }
 
     /**
-     * Initialize abstractTanks the the number of that depends on the number of nOfplayers
+     * check whether the players win or lose
      */
-    private void loadTanks() {
-        tanks = new AbstractTank[2];
-        if (nOfplayers == 2) {
-            tanks[1] = new Tank2(width / 2 - 50, height - 30);
-        }
-        tanks[0] = new Tank1(width / 2, height - 30);
-    }
-
-    /**
-     * Initialize objects of Barriers
-     */
-    private void loadBarriers() {
-        barriers = new Barrier[3];
-        barriers[0] = new Barrier(LEFT_BOUNDARY + 20, 416);
-        barriers[1] = new Barrier(width / 2 - Barrier.getWidth() / 2, 416);
-        barriers[2] = new Barrier(RIGHT_BOUNDARY - 20 - Barrier.getWidth(), 416);
-    }
-
-    /**
-     * initialize objects of invaders
-     */
-    private void loadInvaders() {
-        invaders = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 10; j++) {
-                int x = LEFT_BOUNDARY - 16 + 30 * j;
-                int y = 30 * (i + 1);
-
-                if (i == 0) {
-                    invaders.add(new ArmouredInvader(x, y));
-
-                }else if (i == 1){
-                    invaders.add(new PowerInvader(x, y));
-
-                }else{
-                    invaders.add(new Invader(x, y));
-                }
-
-
-            }
-        }
-        Invader.setDx(1);
-
-
-    }
-
     public void checkSituation() {
         if (invaders.size() == 0) {
+            // win if the all invaders are killed
             ifWon = true;
             frameOfWin = frameCount;
         } else {
-
+            // lose if the lowest invader reaches the bottom boundary
             Invader lowestInvader = invaders.get(invaders.size() - 1);
             if (lowestInvader.getY() + lowestInvader.getHeight() > 406) {
                 ifLose = true;
-                frameofLose = frameCount;
+                frameOfLose = frameCount;
             }
         }
 
+        // lose if one of the tanks is destroyed
         for (int i = 0; i < nOfplayers; i++) {
             AbstractTank tank = tanks[i];
             if (!tank.isAlive()) {
                 ifLose = true;
-                frameofLose = frameCount;
+                frameOfLose = frameCount;
             }
         }
-
-
     }
 
     /**
-     * Display projectiles
+     * Display projectiles and make them move
      */
     private void displayProjectiles() {
         Iterator<Projectile> iterator = projectiles.iterator();
@@ -230,9 +233,9 @@ public class App extends PApplet {
     }
 
     /**
-     * Check whether the projectile collide barrier, tank or invaderFs
+     * Check whether the projectile collide barrier, tank or invaders
      *
-     * @param projectile check whether the projectile collide other objects
+     * @param projectile the projectile to be checked
      */
     private boolean checkCollision(Projectile projectile) {
         String owner = projectile.getOwner();
@@ -246,10 +249,10 @@ public class App extends PApplet {
                         tank.isHit();
                         tank.isHit();
                         tank.isHit();
-                    }else{
+                    } else {
                         tank.isHit();
                     }
-                    tank.boom(true,frameCount);
+                    tank.boom(true, frameCount);
                     tank.getHearts()[tank.getBlood()].isHit();
                     return true;
                 }
@@ -265,7 +268,7 @@ public class App extends PApplet {
                 if (projectile.collides(invader)) {
                     if (invader instanceof PowerInvader || invader instanceof ArmouredInvader) {
                         currentScore += 250;
-                    }else {
+                    } else {
                         currentScore += 100;
                     }
                     invader.isHit();
@@ -291,9 +294,12 @@ public class App extends PApplet {
 
     }
 
+    /**
+     * calculate and display the game time of current round
+     */
     private void getGameTime() {
         gameTime = Math.round(((frameCount - gameStart) / 60.0) * 100) / 100.0;
-        text(String.format("GAME TIME: %.2f", gameTime), 210, 20);
+        text(String.format("GAME TIME: %.2f", gameTime), 150, 20);
     }
 
     /**
@@ -312,7 +318,7 @@ public class App extends PApplet {
     }
 
     /**
-     * Control abstractTanks
+     * Control tanks
      */
     @Override
     public void keyPressed() {
@@ -331,7 +337,6 @@ public class App extends PApplet {
             spaceReleased = false;
             projectiles.add(tanks[0].fire());
         }
-
 
 
         if (nOfplayers == 2) {
@@ -357,7 +362,7 @@ public class App extends PApplet {
     }
 
     /**
-     * Control abstractTanks
+     * Control tanks
      */
     @Override
     public void keyReleased() {
@@ -412,63 +417,11 @@ public class App extends PApplet {
 
     }
 
-    /**
-     * Display and move invaders and its projectiles, and then make them fire
-     */
-    private void displayInvaders() {
-        for (Invader invader : invaders) {
-            invader.display();
-        }
-
-    }
-
-    /**
-     * Make invaders fire
-     */
-    private void invadersFire() {
-        int rate = level < 6 ? 6 - level : 1;
-        if (gameTime % rate == 0) {
-            Invader invader;
-            // if the invader is in the range of tank movement
-            do {
-                int i = (int) random(invaders.size());
-                invader = invaders.get(i);
-            } while (invader.getX() < LEFT_BOUNDARY || invader.getX() > RIGHT_BOUNDARY - invader.getWidth());
-
-            projectiles.add(invader.fire());
-
-
-        }
-    }
-
-    /**
-     * Control the movement of invaders
-     */
-    private void invadersMove() {
-        boolean every2Frame = (frameCount - gameStart) % 2 == 0;
-        if (every2Frame) {
-            for (Invader invader : invaders) {
-                if (nOfSteps < 30) {
-                    invader.moveHoriz();
-                } else if (nOfSteps < 38) {
-                    invader.moveDown();
-
-                } else {
-                    Invader.reverseDir();
-                    nOfSteps = 0;
-                }
-            }
-            nOfSteps++;
-
-        }
-
-    }
-
     private void displayTanks() {
         for (int i = 0; i < nOfplayers; i++) {
             AbstractTank tank = tanks[i];
             tank.display();
-            tank.boom(false,frameCount);
+            tank.boom(false, frameCount);
             stroke(255, 0, 0);
 
             // display its blood
@@ -477,7 +430,6 @@ public class App extends PApplet {
                 heart.display();
             }
         }
-
     }
 
     /**
@@ -504,8 +456,6 @@ public class App extends PApplet {
         if (d && tanks[1].getX() < RIGHT_BOUNDARY - tanks[1].getWidth()) {
             tanks[1].moveRight();
         }
-
-
     }
 
 
@@ -525,7 +475,7 @@ public class App extends PApplet {
      * Display GameOver when losing
      */
     private void gameOver() {
-        if (frameCount - frameofLose < 120) {
+        if (frameCount - frameOfLose < 120) {
             image(loadImage("src/main/resources/gameover.png"), LEFT_BOUNDARY + 100, height / 2);
         } else {
             isDataLoaded = false;

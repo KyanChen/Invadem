@@ -20,16 +20,34 @@ public class Barrier {
     }
 
     /**
+     * Initialize objects of Barriers
+     */
+    public static Barrier[] loadBarriers(int LEFT_BOUNDARY, int RIGHT_BOUNDARY) {
+        Barrier[] barriers = new Barrier[3];
+        barriers[0] = new Barrier(LEFT_BOUNDARY + 20, 416);
+        barriers[1] = new Barrier(320 - Barrier.getWidth() / 2, 416);
+        barriers[2] = new Barrier(RIGHT_BOUNDARY - 20 - width, 416);
+        return barriers;
+    }
+
+    /**
+     * @return width of the barrier
+     */
+    public static int getWidth() {
+        return width;
+    }
+
+    /**
      * create the objects of blocks
      */
     private void loadBlocks() {
-        blocks[0] = new SolidBlock( x, y + 16);
-        blocks[1] = new SolidBlock( x, y + 8);
+        blocks[0] = new SolidBlock(x, y + 16);
+        blocks[1] = new SolidBlock(x, y + 8);
         blocks[2] = new LeftBlock(x, y);
-        blocks[3] = new TopBlock( x+ 8, y);
-        blocks[4] = new RightBlock( x + 16, y);
-        blocks[5] = new SolidBlock( x + 16, y + 8);
-        blocks[6] = new SolidBlock( x + 16, y + 16);
+        blocks[3] = new TopBlock(x + 8, y);
+        blocks[4] = new RightBlock(x + 16, y);
+        blocks[5] = new SolidBlock(x + 16, y + 8);
+        blocks[6] = new SolidBlock(x + 16, y + 16);
     }
 
     /**
@@ -41,13 +59,6 @@ public class Barrier {
                 bc.display();
             }
         }
-    }
-
-    /**
-     * @return width of the barrier
-     */
-    public static int getWidth() {
-        return width;
     }
 
     /**

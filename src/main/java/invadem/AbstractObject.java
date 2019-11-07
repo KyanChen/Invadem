@@ -27,8 +27,6 @@ public abstract class AbstractObject {
 
     }
 
-    public abstract void loadImages();
-
     /**
      * display the object
      */
@@ -38,6 +36,8 @@ public abstract class AbstractObject {
         }
         p.image(sprites[currentSpriteIndex], x, y);
     }
+
+    public abstract void loadImages();
 
     /**
      * deduct the blood
