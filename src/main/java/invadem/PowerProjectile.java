@@ -5,6 +5,7 @@ import processing.core.PImage;
 public class PowerProjectile extends Projectile {
     public PowerProjectile(String owner, int x, int y, int dy) {
         super(owner, x, y, dy);
+        attack = 3;
     }
 
 
@@ -15,4 +16,6 @@ public class PowerProjectile extends Projectile {
         currentSpriteIndex = 0;
         imageLoaded = true;
     }
+
+
 }

@@ -9,15 +9,8 @@ public abstract class AbstractBlock extends AbstractObject {
 
     }
 
-    /**
-     * deduct bloods and change it sprite
-     */
-    @Override
-    public void isHit() {
-        if (blood > 0) {
-            blood--;
-            currentSpriteIndex = blood;
-        }
+    public void updateSprite() {
+        currentSpriteIndex = blood;
     }
 
 }

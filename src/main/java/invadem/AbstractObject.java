@@ -42,8 +42,10 @@ public abstract class AbstractObject {
     /**
      * deduct the blood
      */
-    public void isHit() {
-        blood--;
+    public void isHit(int deduction) {
+        if (blood > 0) {
+            blood -= deduction;
+        }
     }
 
     /**

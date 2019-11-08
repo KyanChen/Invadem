@@ -9,11 +9,14 @@ import processing.core.PImage;
 public class Projectile extends AbstractObject {
     private int dy;
     private String owner;
+    protected int attack;
+
 
     public Projectile(String owner, int x, int y, int dy) {
         super(x, y, 1, 1, 3);
         this.dy = dy;
         this.owner = owner;
+        this.attack = 1;
     }
 
     /**
@@ -52,5 +55,7 @@ public class Projectile extends AbstractObject {
         return owner;
     }
 
-
+    public int getAttack() {
+        return attack;
+    }
 }

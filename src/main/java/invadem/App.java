@@ -247,20 +247,13 @@ public class App extends PApplet {
             for (int i = 0; i < nOfplayers; i++) {
                 AbstractTank tank = tanks[i];
                 if (projectile.collides(tank)) {
-                    if (projectile instanceof PowerProjectile) {
-                        tank.isHit();
-                        tank.isHit();
-                        tank.isHit();
-                    } else {
-                        tank.isHit();
-                    }
+                    tank.isHit(projectile.getAttack());
                     tank.boom(true, frameCount);
-                    tank.getHearts()[tank.getBlood()].isHit();
+                    tank.getHearts()[tank.getBlood()].isHit(1);
+                    tank.getHearts()[tank.getBlood()].updateSprite();
                     return true;
                 }
             }
-
-
         }
         // the TANK_PROJECTILE can hit the invader
         if ("tank".equals(owner)) {
@@ -273,7 +266,7 @@ public class App extends PApplet {
                     } else {
                         currentScore += 100;
                     }
-                    invader.isHit();
+                    invader.isHit(projectile.getAttack());
                     if (invader.getBlood() == 0) {
                         iterator.remove();
                     }
@@ -287,7 +280,8 @@ public class App extends PApplet {
         for (Barrier barrier : barriers) {
             for (AbstractBlock block : barrier.getBlocks()) {
                 if (block.isAlive() && projectile.collides(block)) {
-                    block.isHit();
+                    block.isHit(projectile.getAttack());
+                    block.updateSprite();
                     return true;
                 }
             }
