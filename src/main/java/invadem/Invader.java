@@ -20,11 +20,11 @@ public class Invader extends AbstractObject {
     /**
      * initialize objects of invaders
      */
-    public static List<Invader> loadInvaders(int LEFT_BOUNDARY) {
+    public static List<Invader> loadInvaders() {
         List<Invader> invaders = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 10; j++) {
-                int x = LEFT_BOUNDARY - 16 + 30 * j;
+                int x = App.LEFT_BOUNDARY - 16 + 30 * j;
                 int y = 30 * (i + 1);
                 if (i == 0) {
                     invaders.add(new ArmouredInvader(x, y));

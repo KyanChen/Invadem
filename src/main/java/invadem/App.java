@@ -2,20 +2,19 @@ package invadem;
 
 import processing.core.PApplet;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class App extends PApplet {
-    private final static int LEFT_BOUNDARY = 180;
-    private final static int RIGHT_BOUNDARY = 460;
+    public final static int LEFT_BOUNDARY = 180;
+    public final static int RIGHT_BOUNDARY = 460;
     private boolean isDataLoaded, ifLose, ifWon;
     private int nOfplayers, level;
     private AbstractTank[] tanks;
     private Barrier[] barriers;
     private List<Invader> invaders;
     private List<Projectile> projectiles;
-    private boolean left, right, spaceReleased, a, d, wReleased;
+    private Map<String, Boolean> keys;
+    private boolean spaceReleased, wReleased;
     private int nOfSteps, frameOfWin, gameStart, frameOfLose;
     private double gameTime;
     private int highestScore, currentScore;
@@ -50,6 +49,11 @@ public class App extends PApplet {
         spaceReleased = true;
         highestScore = 10000;
         currentScore = 0;
+        keys = new HashMap<>(4);
+        keys.put("left", false);
+        keys.put("right", false);
+        keys.put("a", false);
+        keys.put("d", false);
 
 
     }
@@ -71,14 +75,13 @@ public class App extends PApplet {
             loadData();
         }
 
-
         if (ifLose) {
             gameOver();
         } else if (ifWon) {
             displayNextLevel();
         } else {
             // the user inputs to control the tank
-            readKeys();
+            AbstractTank.readKeys(tanks, keys);
             // display the game time in second
             getGameTime();
             // display levels
@@ -95,9 +98,9 @@ public class App extends PApplet {
             displayProjectiles();
             // check whether the players win or lose
             checkSituation();
-
         }
     }
+
 
     private void displayBarriers() {
         // display barriers
@@ -179,15 +182,14 @@ public class App extends PApplet {
         // init the tank
         tanks = AbstractTank.loadTanks(nOfplayers);
         // init barriers
-        barriers = Barrier.loadBarriers(LEFT_BOUNDARY, RIGHT_BOUNDARY);
+        barriers = Barrier.loadBarriers();
         // init invaders
-        invaders = Invader.loadInvaders(LEFT_BOUNDARY);
+        invaders = Invader.loadInvaders();
         // init projectiles
         projectiles = new ArrayList<>();
         // update states
         gameStart = frameCount;
         isDataLoaded = true;
-
     }
 
     /**
@@ -324,10 +326,10 @@ public class App extends PApplet {
     public void keyPressed() {
         if (key == CODED) {
             if (keyCode == LEFT) {
-                left = true;
+                keys.put("left", true);
             }
             if (keyCode == RIGHT) {
-                right = true;
+                keys.put("right", true);
             }
 
         }
@@ -342,12 +344,12 @@ public class App extends PApplet {
         if (nOfplayers == 2) {
             // if press a
             if (key == 65 || key == 97) {
-                a = true;
+                keys.put("a", true);
             }
 
             // if press d
             if (key == 68 || key == 100) {
-                d = true;
+                keys.put("d", true);
             }
 
             // wReleased pressed
@@ -357,8 +359,6 @@ public class App extends PApplet {
             }
 
         }
-
-
     }
 
     /**
@@ -368,10 +368,10 @@ public class App extends PApplet {
     public void keyReleased() {
         if (key == CODED) {
             if (keyCode == LEFT) {
-                left = false;
+                keys.put("left", false);
             }
             if (keyCode == RIGHT) {
-                right = false;
+                keys.put("right", false);
             }
 
         }
@@ -384,12 +384,12 @@ public class App extends PApplet {
         if (nOfplayers == 2) {
             // a pressed
             if (key == 65 || key == 97) {
-                a = false;
+                keys.put("a", false);
             }
 
             // d pressed
             if (key == 68 || key == 100) {
-                d = false;
+                keys.put("d", false);
             }
         }
 
@@ -432,31 +432,7 @@ public class App extends PApplet {
         }
     }
 
-    /**
-     * Control the actions when keys pressed
-     */
-    private void readKeys() {
-        // movement of tank1
-        if (left && tanks[0].getX() > LEFT_BOUNDARY) {
-            tanks[0].moveLeft();
-        }
-        if (right && tanks[0].getX() < RIGHT_BOUNDARY - tanks[0].getWidth()) {
-            tanks[0].moveRight();
-        }
 
-
-        if (nOfplayers == 1) {
-            return;
-        }
-        // movement of tanks2
-
-        if (a && tanks[1].getX() > LEFT_BOUNDARY) {
-            tanks[1].moveLeft();
-        }
-        if (d && tanks[1].getX() < RIGHT_BOUNDARY - tanks[1].getWidth()) {
-            tanks[1].moveRight();
-        }
-    }
 
 
     /**

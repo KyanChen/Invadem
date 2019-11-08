@@ -63,9 +63,42 @@ public class TankTest {
         tank1.boom(true, 100);
         assertEquals(tank1.getCurrentSpriteIndex(), 1);
         tank1.boom(false, 150);
+        assertEquals(tank1.getCurrentSpriteIndex(), 1);
+        tank1.boom(false, 321);
         assertEquals(tank1.getCurrentSpriteIndex(), 0);
-        
+    }
+
+    @Test
+    public void testIsHit() {
+        assertEquals(tank1.getBlood(), 3);
+        tank1.isHit();
+        assertEquals(tank1.getBlood(), 2);
+        tank1.isHit();
+        assertEquals(tank1.getBlood(), 1);
+        tank1.isHit();
+        assertEquals(tank1.getBlood(), 0);
+        assertFalse(tank1.isAlive());
+    }
+
+    @Test
+    public void testLoadImages() {
+        App app = new App();
+        AbstractObject.setPApplet(app);
+        tank1.loadImages();
+    }
+
+    @Test
+    public void testLoadTanks() {
+        AbstractTank[] tanks = AbstractTank.loadTanks(1);
+        assertNotNull(tanks[0]);
+        assertNull(tanks[1]);
+
+        tanks = AbstractTank.loadTanks(2);
+        assertNotNull(tanks[0]);
+        assertNotNull(tanks[1]);
 
     }
+
+
 
 }

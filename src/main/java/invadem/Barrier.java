@@ -22,11 +22,11 @@ public class Barrier {
     /**
      * Initialize objects of Barriers
      */
-    public static Barrier[] loadBarriers(int LEFT_BOUNDARY, int RIGHT_BOUNDARY) {
+    public static Barrier[] loadBarriers() {
         Barrier[] barriers = new Barrier[3];
-        barriers[0] = new Barrier(LEFT_BOUNDARY + 20, 416);
+        barriers[0] = new Barrier(App.LEFT_BOUNDARY + 20, 416);
         barriers[1] = new Barrier(320 - Barrier.getWidth() / 2, 416);
-        barriers[2] = new Barrier(RIGHT_BOUNDARY - 20 - width, 416);
+        barriers[2] = new Barrier(App.RIGHT_BOUNDARY - 20 - width, 416);
         return barriers;
     }
 
