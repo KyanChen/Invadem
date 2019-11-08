@@ -38,27 +38,17 @@ public abstract class AbstractTank extends AbstractObject {
     }
 
     /**
-     * Control the actions when keys pressed
+     * @param ifBoom whether or not show the boom effect
      */
-    public static void readKeys(AbstractTank[] tanks, Map<String, Boolean> keys) {
-        // movement of tank1
-        if (keys.get("left") && tanks[0].getX() > App.LEFT_BOUNDARY) {
-            tanks[0].moveLeft();
+    public void boom(boolean ifBoom, int frameCount) {
+        if (ifBoom) {
+            currentSpriteIndex = 1;
+            lastBoomFrame = frameCount;
+            return;
         }
-        if (keys.get("right") && tanks[0].getX() < App.RIGHT_BOUNDARY - tanks[0].getWidth()) {
-            tanks[0].moveRight();
+        if (frameCount - lastBoomFrame > 120) {
+            currentSpriteIndex = 0;
         }
-
-        if (tanks.length == 2) {
-            if (keys.get("a") && tanks[1].getX() > App.LEFT_BOUNDARY) {
-                tanks[1].moveLeft();
-            }
-            if (keys.get("d") && tanks[1].getX() < App.RIGHT_BOUNDARY - tanks[1].getWidth()) {
-                tanks[1].moveRight();
-            }
-        }
-
-
     }
 
     /**
@@ -67,6 +57,29 @@ public abstract class AbstractTank extends AbstractObject {
     public Projectile fire() {
         return new Projectile("tank", x + width / 2, y, -1);
 
+    }
+
+    /**
+     * Control the actions when keys pressed
+     */
+    public void readKeys(Map<String, Boolean> keys) {
+        if (this instanceof Tank1) {
+            // movement of tank1
+            if (keys.containsKey("left") && keys.get("left") && x > App.LEFT_BOUNDARY) {
+                moveLeft();
+            }
+            if (keys.containsKey("right") && keys.get("right") && x < App.RIGHT_BOUNDARY - width) {
+                moveRight();
+            }
+
+        } else {
+            if (keys.containsKey("a") && keys.get("a") && x > App.LEFT_BOUNDARY) {
+                moveLeft();
+            }
+            if (keys.containsKey("d") && keys.get("d") && getX() < App.RIGHT_BOUNDARY - width) {
+                moveRight();
+            }
+        }
     }
 
     /**
@@ -84,20 +97,6 @@ public abstract class AbstractTank extends AbstractObject {
     public void moveRight() {
         if (x < App.RIGHT_BOUNDARY - width) {
             x += dx;
-        }
-    }
-
-    /**
-     * @param ifBoom whether or not show the boom effect
-     */
-    public void boom(boolean ifBoom, int frameCount) {
-        if (ifBoom) {
-            currentSpriteIndex = 1;
-            lastBoomFrame = frameCount;
-            return;
-        }
-        if (frameCount - lastBoomFrame > 120) {
-            currentSpriteIndex = 0;
         }
     }
 

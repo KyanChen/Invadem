@@ -1,7 +1,6 @@
 package invadem;
 
 import processing.core.PImage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,16 +8,18 @@ import java.util.List;
  * the invaders
  */
 public class Invader extends AbstractObject {
-    private static int dx = 1;
+    private int dx;
+    private boolean moved;
+    private int nOfSteps;
 
     public Invader(int x, int y) {
         super(x, y, 1, 16, 16);
-
-
+        nOfSteps = 0;
+        dx = 1;
     }
 
     /**
-     * initialize objects of invaders
+     * @return the list of invaders
      */
     public static List<Invader> loadInvaders() {
         List<Invader> invaders = new ArrayList<>();
@@ -37,19 +38,7 @@ public class Invader extends AbstractObject {
                 }
             }
         }
-        setDx(1);
         return invaders;
-    }
-
-    public static void setDx(int dx) {
-        Invader.dx = dx;
-    }
-
-    /**
-     * change its direction horizontally if move 30 steps
-     */
-    public static void reverseDir() {
-        dx *= -1;
     }
 
     /**
@@ -76,8 +65,6 @@ public class Invader extends AbstractObject {
         currentSpriteIndex = 1;
         int dy = 1;
         y += dy;
-
-
     }
 
     /**
@@ -86,6 +73,33 @@ public class Invader extends AbstractObject {
     public void moveHoriz() {
         currentSpriteIndex = 0;
         x += dx;
+    }
+
+    /**
+     * Control the movement of invaders
+     */
+    public void move() {
+        if (!moved) {
+            if (nOfSteps < 30) {
+                moveHoriz();
+            } else if (nOfSteps < 38) {
+                moveDown();
+            } else {
+                reverseDir();
+                moveHoriz();
+                nOfSteps = 0;
+            }
+            nOfSteps++;
+        }
+        moved = !moved;
+    }
+
+    /**
+     * change its direction horizontally if move 30 steps
+     */
+    public int reverseDir() {
+        dx *= -1;
+        return dx;
     }
 
 }

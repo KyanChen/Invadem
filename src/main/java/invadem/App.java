@@ -15,7 +15,7 @@ public class App extends PApplet {
     private List<Projectile> projectiles;
     private Map<String, Boolean> keys;
     private boolean spaceReleased, wReleased;
-    private int nOfSteps, frameOfWin, gameStart, frameOfLose;
+    private int frameOfWin, gameStart, frameOfLose;
     private double gameTime;
     private int highestScore, currentScore;
 
@@ -37,12 +37,9 @@ public class App extends PApplet {
      */
     @Override
     public void setup() {
-        // init windows
-        background(0);
         textFont(createFont("src/main/resources/PressStart2P-Regular.ttf", 12));
         surface.setTitle("Invadem");
         frameRate(60);
-        nOfSteps = 0;
         isDataLoaded = false;
         nOfplayers = 0;
         level = 1;
@@ -50,11 +47,6 @@ public class App extends PApplet {
         highestScore = 10000;
         currentScore = 0;
         keys = new HashMap<>(4);
-        keys.put("left", false);
-        keys.put("right", false);
-        keys.put("a", false);
-        keys.put("d", false);
-
 
     }
 
@@ -80,8 +72,6 @@ public class App extends PApplet {
         } else if (ifWon) {
             displayNextLevel();
         } else {
-            // the user inputs to control the tank
-            AbstractTank.readKeys(tanks, keys);
             // display the game time in second
             getGameTime();
             // display levels
@@ -112,19 +102,23 @@ public class App extends PApplet {
     private void invadersUpdate() {
         // display invaders
         displayInvaders();
-        // invaders move
-        invadersMove();
         // invader fire randomly
         invadersFire();
     }
 
     /**
-     * Display invaders
+     * Detect the number of nOfplayers the user choose
      */
-    private void displayInvaders() {
-        for (Invader invader : invaders) {
-            invader.display();
+    @Override
+    public void mouseClicked() {
+        if (mouseX > 210 && mouseX < 310 && mouseY > 240 && mouseY < 280) {
+            nOfplayers = 1;
         }
+
+        if (mouseX > 340 && mouseX < 440 && mouseY > 240 && mouseY < 280) {
+            nOfplayers = 2;
+        }
+
     }
 
     /**
@@ -144,26 +138,7 @@ public class App extends PApplet {
         }
     }
 
-    /**
-     * Control the movement of invaders
-     */
-    private void invadersMove() {
-        boolean every2Frame = (frameCount - gameStart) % 2 == 0;
-        if (every2Frame) {
-            for (Invader invader : invaders) {
-                if (nOfSteps < 30) {
-                    invader.moveHoriz();
-                } else if (nOfSteps < 38) {
-                    invader.moveDown();
 
-                } else {
-                    Invader.reverseDir();
-                    nOfSteps = 0;
-                }
-            }
-            nOfSteps++;
-        }
-    }
 
     private void displayScore() {
         text("HIGHEST: " + highestScore, 480, 20);
@@ -178,7 +153,6 @@ public class App extends PApplet {
         AbstractObject.setPApplet(this);
         ifWon = false;
         ifLose = false;
-        nOfSteps = 0;
         // init the tank
         tanks = AbstractTank.loadTanks(nOfplayers);
         // init barriers
@@ -287,30 +261,6 @@ public class App extends PApplet {
             }
         }
         return false;
-
-    }
-
-    /**
-     * calculate and display the game time of current round
-     */
-    private void getGameTime() {
-        gameTime = Math.round(((frameCount - gameStart) / 60.0) * 100) / 100.0;
-        text(String.format("GAME TIME: %.2f", gameTime), 150, 20);
-    }
-
-    /**
-     * Detect the number of nOfplayers the user choose
-     */
-    @Override
-    public void mouseClicked() {
-        if (mouseX > 210 && mouseX < 310 && mouseY > 240 && mouseY < 280) {
-            nOfplayers = 1;
-        }
-
-        if (mouseX > 340 && mouseX < 440 && mouseY > 240 && mouseY < 280) {
-            nOfplayers = 2;
-        }
-
     }
 
     /**
@@ -332,6 +282,7 @@ public class App extends PApplet {
         if (key == 32 && spaceReleased) {
             spaceReleased = false;
             projectiles.add(tanks[0].fire());
+            invaders = new ArrayList<>();
         }
 
 
@@ -385,13 +336,41 @@ public class App extends PApplet {
             if (key == 68 || key == 100) {
                 keys.put("d", false);
             }
+
+            // wReleased pressed
+            if (key == 87 || key == 119) {
+                wReleased = true;
+            }
         }
 
-        // wReleased pressed
-        if (key == 87 || key == 119) {
-            wReleased = true;
-        }
 
+
+    }
+
+    /**
+     * Display invaders
+     */
+    private void displayInvaders() {
+        for (Invader invader : invaders) {
+            invader.display();
+            invader.move();
+        }
+    }
+
+    private void displayTanks() {
+        for (int i = 0; i < nOfplayers; i++) {
+            AbstractTank tank = tanks[i];
+            tank.display();
+            tank.readKeys(keys);
+            tank.boom(false, frameCount);
+
+            // display its blood
+            stroke(255, 0, 0);
+            text("Player " + (i + 1), 10, 45 * (i + 1));
+            for (Heart heart : tank.getHearts()) {
+                heart.display();
+            }
+        }
     }
 
     /**
@@ -411,19 +390,12 @@ public class App extends PApplet {
 
     }
 
-    private void displayTanks() {
-        for (int i = 0; i < nOfplayers; i++) {
-            AbstractTank tank = tanks[i];
-            tank.display();
-            tank.boom(false, frameCount);
-            stroke(255, 0, 0);
-
-            // display its blood
-            text("Player " + (i + 1), 10, 45 * (i + 1));
-            for (Heart heart : tank.getHearts()) {
-                heart.display();
-            }
-        }
+    /**
+     * calculate and display the game time of current round
+     */
+    private void getGameTime() {
+        gameTime = Math.round(((frameCount - gameStart) / 60.0) * 100) / 100.0;
+        text(String.format("GAME TIME: %.2f", gameTime), 170, 20);
     }
 
 
@@ -456,5 +428,4 @@ public class App extends PApplet {
             level = 1;
         }
     }
-
 }
