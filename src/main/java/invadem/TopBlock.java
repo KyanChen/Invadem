@@ -18,7 +18,7 @@ public class TopBlock extends AbstractBlock {
         sprites[1] = p.loadImage("src/main/resources/barrier_top3.png");
         sprites[0] = p.loadImage("src/main/resources/empty.png");
         currentSpriteIndex = 3;
-        imageLoaded = true;
+
 
     }
 }

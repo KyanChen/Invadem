@@ -41,7 +41,7 @@ public class Projectile extends AbstractObject {
         sprites = new PImage[1];
         sprites[0] = p.loadImage("src/main/resources/projectile.png");
         currentSpriteIndex = 0;
-        imageLoaded = true;
+
     }
 
     /**

@@ -18,7 +18,7 @@ public class SolidBlock extends AbstractBlock {
         sprites[1] = p.loadImage("src/main/resources/barrier_solid3.png");
         sprites[0] = p.loadImage("src/main/resources/empty.png");
         currentSpriteIndex = 3;
-        imageLoaded = true;
+
 
     }
 }

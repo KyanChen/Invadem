@@ -107,21 +107,6 @@ public class App extends PApplet {
     }
 
     /**
-     * Detect the number of nOfplayers the user choose
-     */
-    @Override
-    public void mouseClicked() {
-        if (mouseX > 210 && mouseX < 310 && mouseY > 240 && mouseY < 280) {
-            nOfplayers = 1;
-        }
-
-        if (mouseX > 340 && mouseX < 440 && mouseY > 240 && mouseY < 280) {
-            nOfplayers = 2;
-        }
-
-    }
-
-    /**
      * Make invaders fire
      */
     private void invadersFire() {
@@ -138,7 +123,112 @@ public class App extends PApplet {
         }
     }
 
+    /**
+     * Detect the number of nOfplayers the user choose
+     */
+    @Override
+    public void mouseClicked() {
+        if (mouseX > 210 && mouseX < 310 && mouseY > 240 && mouseY < 280) {
+            nOfplayers = 1;
+        }
 
+        if (mouseX > 340 && mouseX < 440 && mouseY > 240 && mouseY < 280) {
+            nOfplayers = 2;
+        }
+
+    }
+
+    /**
+     * Control tanks
+     */
+    @Override
+    public void keyPressed() {
+        if (key == CODED) {
+            if (keyCode == LEFT) {
+                keys.put("left", true);
+            }
+            if (keyCode == RIGHT) {
+                keys.put("right", true);
+            }
+
+        }
+
+        // if press space key
+        if (key == 32 && spaceReleased) {
+            spaceReleased = false;
+            projectiles.add(tanks[0].fire());
+        }
+
+
+        if (nOfplayers == 2) {
+            // if press a
+            if (key == 65 || key == 97) {
+                keys.put("a", true);
+            }
+
+            // if press d
+            if (key == 68 || key == 100) {
+                keys.put("d", true);
+            }
+
+            // wReleased pressed
+            if ((key == 87 || key == 119) && wReleased) {
+                wReleased = false;
+                projectiles.add(tanks[1].fire());
+            }
+
+        }
+    }
+
+    /**
+     * Control tanks
+     */
+    @Override
+    public void keyReleased() {
+        if (key == CODED) {
+            if (keyCode == LEFT) {
+                keys.put("left", false);
+            }
+            if (keyCode == RIGHT) {
+                keys.put("right", false);
+            }
+
+        }
+
+        if (key == 32) {
+            spaceReleased = true;
+        }
+
+
+        if (nOfplayers == 2) {
+            // a pressed
+            if (key == 65 || key == 97) {
+                keys.put("a", false);
+            }
+
+            // d pressed
+            if (key == 68 || key == 100) {
+                keys.put("d", false);
+            }
+
+            // wReleased pressed
+            if (key == 87 || key == 119) {
+                wReleased = true;
+            }
+        }
+
+
+    }
+
+    /**
+     * Display invaders
+     */
+    private void displayInvaders() {
+        for (Invader invader : invaders) {
+            invader.display();
+            invader.move();
+        }
+    }
 
     private void displayScore() {
         text("HIGHEST: " + highestScore, 480, 20);
@@ -263,100 +353,6 @@ public class App extends PApplet {
         return false;
     }
 
-    /**
-     * Control tanks
-     */
-    @Override
-    public void keyPressed() {
-        if (key == CODED) {
-            if (keyCode == LEFT) {
-                keys.put("left", true);
-            }
-            if (keyCode == RIGHT) {
-                keys.put("right", true);
-            }
-
-        }
-
-        // if press space key
-        if (key == 32 && spaceReleased) {
-            spaceReleased = false;
-            projectiles.add(tanks[0].fire());
-            invaders = new ArrayList<>();
-        }
-
-
-        if (nOfplayers == 2) {
-            // if press a
-            if (key == 65 || key == 97) {
-                keys.put("a", true);
-            }
-
-            // if press d
-            if (key == 68 || key == 100) {
-                keys.put("d", true);
-            }
-
-            // wReleased pressed
-            if ((key == 87 || key == 119) && wReleased) {
-                wReleased = false;
-                projectiles.add(tanks[1].fire());
-            }
-
-        }
-    }
-
-    /**
-     * Control tanks
-     */
-    @Override
-    public void keyReleased() {
-        if (key == CODED) {
-            if (keyCode == LEFT) {
-                keys.put("left", false);
-            }
-            if (keyCode == RIGHT) {
-                keys.put("right", false);
-            }
-
-        }
-
-        if (key == 32) {
-            spaceReleased = true;
-        }
-
-
-        if (nOfplayers == 2) {
-            // a pressed
-            if (key == 65 || key == 97) {
-                keys.put("a", false);
-            }
-
-            // d pressed
-            if (key == 68 || key == 100) {
-                keys.put("d", false);
-            }
-
-            // wReleased pressed
-            if (key == 87 || key == 119) {
-                wReleased = true;
-            }
-        }
-
-
-
-    }
-
-    /**
-     * Display invaders
-     */
-    private void displayInvaders() {
-        for (Invader invader : invaders) {
-            invader.display();
-            invader.move();
-        }
-    }
-
     private void displayTanks() {
         for (int i = 0; i < nOfplayers; i++) {
             AbstractTank tank = tanks[i];
@@ -397,8 +393,6 @@ public class App extends PApplet {
         gameTime = Math.round(((frameCount - gameStart) / 60.0) * 100) / 100.0;
         text(String.format("GAME TIME: %.2f", gameTime), 170, 20);
     }
-
-
 
 
     /**

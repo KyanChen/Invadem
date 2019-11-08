@@ -55,7 +55,7 @@ public class Invader extends AbstractObject {
         sprites[0] = p.loadImage("src/main/resources/invader1.png");
         sprites[1] = p.loadImage("src/main/resources/invader2.png");
         currentSpriteIndex = 0;
-        imageLoaded = true;
+
     }
 
     /**

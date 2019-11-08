@@ -14,7 +14,7 @@ public class PowerProjectile extends Projectile {
         sprites = new PImage[1];
         sprites[0] = p.loadImage("src/main/resources/projectile_lg.png");
         currentSpriteIndex = 0;
-        imageLoaded = true;
+
     }
 
 

@@ -15,7 +15,6 @@ public abstract class AbstractObject {
     protected PImage[] sprites;
     protected int currentSpriteIndex;
     protected int blood;
-    protected boolean imageLoaded;
 
 
     public AbstractObject(int x, int y, int blood, int width, int height) {
@@ -31,7 +30,7 @@ public abstract class AbstractObject {
      * display the object
      */
     public void display() {
-        if (!imageLoaded) {
+        if (sprites == null) {
             loadImages();
         }
         p.image(sprites[currentSpriteIndex], x, y);

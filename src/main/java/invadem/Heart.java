@@ -19,7 +19,7 @@ public class Heart extends AbstractObject {
         sprites[1] = p.loadImage("src/main/resources/heart1.png");
         sprites[0] = p.loadImage("src/main/resources/heart2.png");
         currentSpriteIndex = 1;
-        imageLoaded = true;
+
     }
 
     public void updateSprite() {

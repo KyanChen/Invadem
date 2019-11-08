@@ -21,7 +21,7 @@ public class Tank2 extends AbstractTank {
         sprites[0] = p.loadImage("src/main/resources/tank2.png");
         sprites[1] = p.loadImage("src/main/resources/tank2_boom.png");
         currentSpriteIndex = 0;
-        imageLoaded = true;
+
     }
 
 

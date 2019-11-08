@@ -23,6 +23,6 @@ public class PowerInvader extends Invader {
         sprites[0] = p.loadImage("src/main/resources/invader1_power.png");
         sprites[1] = p.loadImage("src/main/resources/invader2_power.png");
         currentSpriteIndex = 0;
-        imageLoaded = true;
+
     }
 }

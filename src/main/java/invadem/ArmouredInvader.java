@@ -14,6 +14,5 @@ public class ArmouredInvader extends Invader {
         sprites[0] = p.loadImage("src/main/resources/invader1_armoured.png");
         sprites[1] = p.loadImage("src/main/resources/invader2_armoured.png");
         currentSpriteIndex = 0;
-        imageLoaded = true;
     }
 }
