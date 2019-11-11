@@ -4,7 +4,7 @@ import processing.core.PImage;
 
 
 /**
- * display the blood of tanks
+ * the hit point of the tank
  */
 public class Heart extends AbstractObject {
 
@@ -13,6 +13,9 @@ public class Heart extends AbstractObject {
 
     }
 
+    /**
+     * load images of the heart
+     */
     @Override
     public void loadImages() {
         sprites = new PImage[2];
@@ -22,6 +25,9 @@ public class Heart extends AbstractObject {
 
     }
 
+    /**
+     * update the index of the current sprite when blood changes
+     */
     public void updateSprite() {
         currentSpriteIndex = blood;
     }

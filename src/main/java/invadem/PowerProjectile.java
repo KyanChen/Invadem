@@ -2,6 +2,9 @@ package invadem;
 
 import processing.core.PImage;
 
+/**
+ * Projectile fired by the power invader
+ */
 public class PowerProjectile extends Projectile {
     public PowerProjectile(String owner, int x, int y, int dy) {
         super(owner, x, y, dy);
@@ -9,6 +12,9 @@ public class PowerProjectile extends Projectile {
     }
 
 
+    /**
+     * load images of the projectile
+     */
     @Override
     public void loadImages() {
         sprites = new PImage[1];

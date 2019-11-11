@@ -19,6 +19,7 @@ public class Invader extends AbstractObject {
     }
 
     /**
+     * load invaders
      * @return the list of invaders
      */
     public static List<Invader> loadInvaders() {
@@ -42,13 +43,16 @@ public class Invader extends AbstractObject {
     }
 
     /**
-     * @return fire a projectile
+     * @return the projectile
      */
     public Projectile fire() {
         return new Projectile("invader", x, y, 1);
 
     }
 
+    /**
+     * load images of the invader
+     */
     @Override
     public void loadImages() {
         sprites = new PImage[2];

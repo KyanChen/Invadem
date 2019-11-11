@@ -2,12 +2,18 @@ package invadem;
 
 import processing.core.PImage;
 
+/**
+ * the tank of the player 2
+ */
 public class Tank2 extends AbstractTank {
 
     public Tank2(int x, int y) {
         super(x, y);
     }
 
+    /**
+     * load hearts of the tank
+     */
     @Override
     public void loadHearts() {
         hearts[0] = new Heart(20, 95);
@@ -15,6 +21,9 @@ public class Tank2 extends AbstractTank {
         hearts[2] = new Heart(100, 95);
     }
 
+    /**
+     * load images of the tank
+     */
     @Override
     public void loadImages() {
         sprites = new PImage[2];

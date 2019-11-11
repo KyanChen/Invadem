@@ -2,6 +2,7 @@ package invadem;
 
 import org.junit.Before;
 import org.junit.Test;
+import processing.core.PApplet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +15,11 @@ public class TankTest {
     @Test
     public void testBoom() {
         tanks[0].boom(true, 100);
-        assertEquals(tanks[0].getCurrentSpriteIndex(), 1);
+        assertEquals(1, tanks[0].getCurrentSpriteIndex());
         tanks[0].boom(false, 150);
-        assertEquals(tanks[0].getCurrentSpriteIndex(), 1);
+        assertEquals(1, tanks[0].getCurrentSpriteIndex());
         tanks[0].boom(false, 321);
-        assertEquals(tanks[0].getCurrentSpriteIndex(), 0);
+        assertEquals(0, tanks[0].getCurrentSpriteIndex());
     }
 
     @Test
@@ -30,13 +31,13 @@ public class TankTest {
 
     @Test
     public void testIsHit() {
-        assertEquals(tanks[0].getBlood(), 3);
+        assertEquals(3, tanks[0].getBlood());
         tanks[0].isHit(1);
-        assertEquals(tanks[0].getBlood(), 2);
+        assertEquals(2, tanks[0].getBlood());
         tanks[0].isHit(1);
-        assertEquals(tanks[0].getBlood(), 1);
+        assertEquals(1, tanks[0].getBlood());
         tanks[0].isHit(1);
-        assertEquals(tanks[0].getBlood(), 0);
+        assertEquals(0, tanks[0].getBlood());
         assertFalse(tanks[0].isAlive());
     }
 
@@ -134,29 +135,24 @@ public class TankTest {
         keys.put("d", false);
 
 
-
     }
 
     @Test
     public void testTankConstruction() {
         assertNotNull(tanks[0]);
         assertNotNull(tanks[1]);
-
     }
 
     @Test
     public void testTankFire() {
         assertNotNull(tanks[0].fire());
         assertNotNull(tanks[1].fire());
-
     }
 
     @Test
     public void testTankIsAlive() {
         assertTrue(tanks[0].isAlive());
         assertTrue(tanks[1].isAlive());
-
     }
-
 
 }

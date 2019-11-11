@@ -1,7 +1,7 @@
 package invadem;
 
 /**
- * assemble the blocks of barriers
+ * assemble the blocks of the barrier
  */
 public class Barrier {
     private static int width = 24;
@@ -25,20 +25,13 @@ public class Barrier {
     public static Barrier[] loadBarriers() {
         Barrier[] barriers = new Barrier[3];
         barriers[0] = new Barrier(App.LEFT_BOUNDARY + 20, 416);
-        barriers[1] = new Barrier(320 - Barrier.getWidth() / 2, 416);
+        barriers[1] = new Barrier(320 - width / 2, 416);
         barriers[2] = new Barrier(App.RIGHT_BOUNDARY - 20 - width, 416);
         return barriers;
     }
 
     /**
-     * @return width of the barrier
-     */
-    public static int getWidth() {
-        return width;
-    }
-
-    /**
-     * create the objects of blocks
+     * create and assemble blocks
      */
     private void loadBlocks() {
         blocks[0] = new SolidBlock(x, y + 16);
@@ -48,6 +41,13 @@ public class Barrier {
         blocks[4] = new RightBlock(x + 16, y);
         blocks[5] = new SolidBlock(x + 16, y + 8);
         blocks[6] = new SolidBlock(x + 16, y + 16);
+    }
+
+    /**
+     * @return width of the barrier
+     */
+    public int getWidth() {
+        return width;
     }
 
     /**
@@ -64,7 +64,7 @@ public class Barrier {
     /**
      * @return height of the barrier
      */
-    public static int getHeight() {
+    public int getHeight() {
         return height;
     }
 

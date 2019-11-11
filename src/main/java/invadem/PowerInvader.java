@@ -2,6 +2,10 @@ package invadem;
 
 import processing.core.PImage;
 
+/**
+ * Power invaders have the same amount of health as an invader
+ * but will destroy the tank or barrier component in one shot
+ */
 public class PowerInvader extends Invader {
 
     public PowerInvader(int x, int y) {
@@ -9,7 +13,7 @@ public class PowerInvader extends Invader {
     }
 
     /**
-     * @return fire a projectile
+     * @return the projectile
      */
     @Override
     public Projectile fire() {
@@ -17,6 +21,9 @@ public class PowerInvader extends Invader {
 
     }
 
+    /**
+     * load images of the invader
+     */
     @Override
     public void loadImages() {
         sprites = new PImage[2];

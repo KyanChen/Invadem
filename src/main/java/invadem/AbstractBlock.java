@@ -9,6 +9,9 @@ public abstract class AbstractBlock extends AbstractObject {
 
     }
 
+    /**
+     * update the index of sprite when the blood changes
+     */
     public void updateSprite() {
         currentSpriteIndex = blood;
     }

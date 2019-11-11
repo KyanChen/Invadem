@@ -2,12 +2,19 @@ package invadem;
 
 import processing.core.PImage;
 
+/**
+ * the armoured invaders have triple the hit points of a regular invader but fires a regular
+ * projectile
+ */
 public class ArmouredInvader extends Invader {
     public ArmouredInvader(int x, int y) {
         super(x, y);
         blood = 3;
     }
 
+    /**
+     * load images of armoured invaders
+     */
     @Override
     public void loadImages() {
         sprites = new PImage[2];

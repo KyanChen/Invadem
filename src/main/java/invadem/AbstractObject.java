@@ -4,7 +4,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
- * the parent class of Heart, Invader, Projectile, AbstractTank and Block
+ * the parent class of Heart, Invader, Projectile, AbstractTank and AbstractBlock
  */
 public abstract class AbstractObject {
     protected static PApplet p;
@@ -27,6 +27,13 @@ public abstract class AbstractObject {
     }
 
     /**
+     * @param pApplet the PApplet object where to draw objects
+     */
+    public static void setPApplet(PApplet pApplet) {
+        p = pApplet;
+    }
+
+    /**
      * display the object
      */
     public void display() {
@@ -36,29 +43,34 @@ public abstract class AbstractObject {
         p.image(sprites[currentSpriteIndex], x, y);
     }
 
+    /**
+     * load images of objects
+     */
     public abstract void loadImages();
 
     /**
-     * deduct the blood
+     * deduct the blood when hit
      */
     public void isHit(int deduction) {
-        if (blood > 0) {
+        if (blood > deduction) {
             blood -= deduction;
+        } else {
+            blood = 0;
         }
     }
 
     /**
-     * @param pApplet the PApplet object where to display objects
+     * @return the blood of the object
      */
-    public static void setPApplet(PApplet pApplet) {
-        p = pApplet;
+    public int getBlood() {
+        return blood;
     }
 
     /**
-     * @return width of the object
+     * @return the index of the current sprite
      */
-    public int getWidth() {
-        return width;
+    public int getCurrentSpriteIndex() {
+        return currentSpriteIndex;
     }
 
     /**
@@ -66,6 +78,13 @@ public abstract class AbstractObject {
      */
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * @return width of the object
+     */
+    public int getWidth() {
+        return width;
     }
 
     /**
@@ -87,16 +106,5 @@ public abstract class AbstractObject {
      */
     public boolean isAlive() {
         return blood > 0;
-    }
-
-    /**
-     * @return the blood of the object
-     */
-    public int getBlood() {
-        return blood;
-    }
-
-    public int getCurrentSpriteIndex() {
-        return currentSpriteIndex;
     }
 }

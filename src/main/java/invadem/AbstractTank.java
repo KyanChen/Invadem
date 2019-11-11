@@ -21,12 +21,10 @@ public abstract class AbstractTank extends AbstractObject {
 
     }
 
-    public abstract void loadHearts();
-
     /**
-     * Initialize tanks and the number of that depends on the number of nOfplayers
-     *
-     * @param nOfplayers the number of players
+     * load tanks
+     * @param nOfplayers Initialize tanks and the number of that depends on the number of players
+     * @return the array of tanks
      */
     public static AbstractTank[] loadTanks(int nOfplayers) {
         AbstractTank[] tanks = new AbstractTank[nOfplayers];
@@ -38,7 +36,14 @@ public abstract class AbstractTank extends AbstractObject {
     }
 
     /**
+     * load hearts of the tank
+     */
+    public abstract void loadHearts();
+
+    /**
+     * show the boom effect when hit
      * @param ifBoom whether or not show the boom effect
+     * @param frameCount the current frame
      */
     public void boom(boolean ifBoom, int frameCount) {
         if (ifBoom) {
@@ -52,7 +57,8 @@ public abstract class AbstractTank extends AbstractObject {
     }
 
     /**
-     * @return fire and return the projectile
+     * tank fires
+     * @return the projectile
      */
     public Projectile fire() {
         return new Projectile("tank", x + width / 2, y, -1);
@@ -61,6 +67,7 @@ public abstract class AbstractTank extends AbstractObject {
 
     /**
      * Control the actions when keys pressed
+     * @param keys keys pressed
      */
     public void readKeys(Map<String, Boolean> keys) {
         if (this instanceof Tank1) {

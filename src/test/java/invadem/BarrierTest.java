@@ -1,52 +1,33 @@
 package invadem;
 
-import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.junit.Before;
+import org.junit.Test;
+
 public class BarrierTest {
+    Barrier[] barriers;
 
-//    @Test
-//    public void barrierConstruction() {
-//        BARRIER b = /* Your Constructor Here */
-//        b.hit();
-//        assertNotNull(b);
-//    }
+    @Before
+    public void testLoadBarriers() {
+        barriers = Barrier.loadBarriers();
+        assertEquals(3, barriers.length);
+        for (Barrier barrier : barriers) {
+            assertEquals(7, barrier.getBlocks().length);
+        }
+    }
 
-//    @Test
-//    public void testBarrierNotDestroyed() {
-//        BARRIER b = /* Your Constructor Here */
-//        assertEquals(false, b.isDestroyed());
-//    }
+    @Test
+    public void testGetHeight() {
+        for (Barrier barrier : barriers) {
+            assertEquals(24, barrier.getHeight());
+        }
+    }
 
-//    @Test
-//    public void testBarrierHitPointsMax() {
-//        BARRIER b = /* Your Constructor Here */
-//        assertEquals(3, b.hitPoints());
-//    }
-
-//    @Test
-//    public void testBarrierHitPointsMax() {
-//        BARRIER b = /* Your Constructor Here */
-//        b.hit();
-//        assertEquals(2, b.hitPoints());
-//    }
-
-//    @Test
-//    public void testBarrierHitPointsMax() {
-//        BARRIER b = /* Your Constructor Here */
-//        b.hit();
-//        b.hit();
-//        assertEquals(1, b.hitPoints());
-//    }
-
-
-//    @Test
-//    public void testBarrierIsDestroyed() {
-//        BARRIER b = /* Your Constructor Here */
-//        b.hit();
-//        b.hit();
-//        b.hit();
-//        assertEquals(false, b.isDestroyed());
-//    }
-
+    @Test
+    public void testGetWidth() {
+        for (Barrier barrier : barriers) {
+            assertEquals(24, barrier.getWidth());
+        }
+    }
 }

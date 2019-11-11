@@ -2,6 +2,9 @@ package invadem;
 
 import processing.core.PImage;
 
+/**
+ * the top block of the barrier
+ */
 public class TopBlock extends AbstractBlock {
 
 
@@ -9,6 +12,9 @@ public class TopBlock extends AbstractBlock {
         super(x, y);
     }
 
+    /**
+     * load images of the block
+     */
     @Override
     public void loadImages() {
         // left

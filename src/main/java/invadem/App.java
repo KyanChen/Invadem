@@ -7,17 +7,17 @@ import java.util.*;
 public class App extends PApplet {
     public final static int LEFT_BOUNDARY = 180;
     public final static int RIGHT_BOUNDARY = 460;
-    private boolean isDataLoaded, ifLose, ifWon;
-    private int nOfplayers, level;
-    private AbstractTank[] tanks;
-    private Barrier[] barriers;
-    private List<Invader> invaders;
-    private List<Projectile> projectiles;
-    private Map<String, Boolean> keys;
-    private boolean spaceReleased, wReleased;
-    private int frameOfWin, gameStart, frameOfLose;
-    private double gameTime;
-    private int highestScore, currentScore;
+    protected boolean isDataLoaded, lost, won;
+    protected int nOfplayers, level;
+    protected AbstractTank[] tanks;
+    protected Barrier[] barriers;
+    protected List<Invader> invaders;
+    protected List<Projectile> projectiles;
+    protected Map<String, Boolean> keys;
+    protected boolean spaceReleased, wReleased;
+    protected int frameOfWin, gameStart, frameOfLose;
+    protected double gameTime;
+    protected int highestScore, currentScore;
 
 
     public static void main(String[] args) {
@@ -33,7 +33,7 @@ public class App extends PApplet {
     }
 
     /**
-     * Initialize the window
+     * Initialize the window and data
      */
     @Override
     public void setup() {
@@ -56,20 +56,22 @@ public class App extends PApplet {
     @Override
     public void draw() {
         background(0);
-        // ask the users to select the number of nOfplayers
+        // ask the users to select the number of players
         if (nOfplayers == 0) {
             choosePlayers();
             return;
         }
 
-        // loadData here instead of inside setup() to optimize startup speed
+        // loadData at the beginning or when players win or lose
         if (!isDataLoaded) {
             loadData();
         }
 
-        if (ifLose) {
+        if (lost) {
+            // show game over if lost
             gameOver();
-        } else if (ifWon) {
+        } else if (won) {
+            // show next level if won
             displayNextLevel();
         } else {
             // display the game time in second
@@ -91,40 +93,8 @@ public class App extends PApplet {
         }
     }
 
-
-    private void displayBarriers() {
-        // display barriers
-        for (Barrier b : barriers) {
-            b.display();
-        }
-    }
-
-    private void invadersUpdate() {
-        // display invaders
-        displayInvaders();
-        // invader fire randomly
-        invadersFire();
-    }
-
     /**
-     * Make invaders fire
-     */
-    private void invadersFire() {
-        int rate = level < 6 ? 6 - level : 1;
-        if (gameTime % rate == 0) {
-            Invader invader;
-            // if the invader is in the range of tank movement
-            do {
-                int i = (int) random(invaders.size());
-                invader = invaders.get(i);
-            } while (invader.getX() < LEFT_BOUNDARY || invader.getX() > RIGHT_BOUNDARY - invader.getWidth());
-
-            projectiles.add(invader.fire());
-        }
-    }
-
-    /**
-     * Detect the number of nOfplayers the user choose
+     * Detect the number of players the user choose
      */
     @Override
     public void mouseClicked() {
@@ -216,33 +186,14 @@ public class App extends PApplet {
                 wReleased = true;
             }
         }
-
-
     }
 
     /**
-     * Display invaders
-     */
-    private void displayInvaders() {
-        for (Invader invader : invaders) {
-            invader.display();
-            invader.move();
-        }
-    }
-
-    private void displayScore() {
-        text("HIGHEST: " + highestScore, 480, 20);
-        text("CURRENT: " + currentScore, 10, 20);
-    }
-
-    /**
-     * Initialize data required for the next level or new game after game over
+     * Initialize data required for the next level or a new game
      */
     public void loadData() {
         // init all objects on the screen
         AbstractObject.setPApplet(this);
-        ifWon = false;
-        ifLose = false;
         // init the tank
         tanks = AbstractTank.loadTanks(nOfplayers);
         // init barriers
@@ -253,6 +204,8 @@ public class App extends PApplet {
         projectiles = new ArrayList<>();
         // update states
         gameStart = frameCount;
+        won = false;
+        lost = false;
         isDataLoaded = true;
     }
 
@@ -262,13 +215,13 @@ public class App extends PApplet {
     public void checkSituation() {
         if (invaders.size() == 0) {
             // win if the all invaders are killed
-            ifWon = true;
+            won = true;
             frameOfWin = frameCount;
         } else {
             // lose if the lowest invader reaches the bottom boundary
             Invader lowestInvader = invaders.get(invaders.size() - 1);
             if (lowestInvader.getY() + lowestInvader.getHeight() > 406) {
-                ifLose = true;
+                lost = true;
                 frameOfLose = frameCount;
             }
         }
@@ -277,14 +230,71 @@ public class App extends PApplet {
         for (int i = 0; i < nOfplayers; i++) {
             AbstractTank tank = tanks[i];
             if (!tank.isAlive()) {
-                ifLose = true;
+                lost = true;
                 frameOfLose = frameCount;
             }
         }
     }
 
     /**
-     * Display projectiles and make them move
+     * draw barriers
+     */
+    private void displayBarriers() {
+        // display barriers
+        for (Barrier b : barriers) {
+            b.display();
+        }
+    }
+
+    /**
+     * draw invaders and make them move and fire
+     */
+    private void invadersUpdate() {
+        // display invaders
+        displayInvaders();
+        // invader fire randomly
+        invadersFire();
+    }
+
+    /**
+     * Make invaders fire
+     */
+    private void invadersFire() {
+        // rate of fire will increase as the level increases
+        int rate = level < 6 ? 6 - level : 1;
+        if (gameTime % rate == 0) {
+            Invader invader;
+            // pick up an invader while the invader is not in the range of tank movement
+            do {
+                int i = (int) random(invaders.size());
+                invader = invaders.get(i);
+            } while (invader.getX() < LEFT_BOUNDARY || invader.getX() > RIGHT_BOUNDARY - invader.getWidth());
+
+            projectiles.add(invader.fire());
+        }
+    }
+
+    /**
+     * Display invaders and make them move
+     */
+    private void displayInvaders() {
+        for (Invader invader : invaders) {
+            invader.display();
+            invader.move();
+        }
+    }
+
+    /**
+     * display highest and current scores
+     */
+    private void displayScore() {
+        text("HIGHEST: " + highestScore, 480, 20);
+        text("CURRENT: " + currentScore, 10, 20);
+    }
+
+    /**
+     * Display projectiles and make them move.
+     * Detect the collision of projectiles.
      */
     private void displayProjectiles() {
         Iterator<Projectile> iterator = projectiles.iterator();
@@ -298,10 +308,11 @@ public class App extends PApplet {
         }
     }
 
+
     /**
      * Check whether the projectile collide barrier, tank or invaders
-     *
-     * @param projectile the projectile to be checked
+     * @param projectile projectile the projectile to be checked
+     * @return if collide some objects
      */
     private boolean checkCollision(Projectile projectile) {
         String owner = projectile.getOwner();
@@ -312,7 +323,9 @@ public class App extends PApplet {
                 AbstractTank tank = tanks[i];
                 if (projectile.collides(tank)) {
                     tank.isHit(projectile.getAttack());
+                    // show boom effect
                     tank.boom(true, frameCount);
+                    // update bloods of the tank
                     tank.getHearts()[tank.getBlood()].isHit(1);
                     tank.getHearts()[tank.getBlood()].updateSprite();
                     return true;
@@ -325,13 +338,13 @@ public class App extends PApplet {
             while (iterator.hasNext()) {
                 Invader invader = iterator.next();
                 if (projectile.collides(invader)) {
-                    if (invader instanceof PowerInvader || invader instanceof ArmouredInvader) {
-                        currentScore += 250;
-                    } else {
-                        currentScore += 100;
-                    }
                     invader.isHit(projectile.getAttack());
                     if (invader.getBlood() == 0) {
+                        if (invader instanceof PowerInvader || invader instanceof ArmouredInvader) {
+                            currentScore += 250;
+                        } else {
+                            currentScore += 100;
+                        }
                         iterator.remove();
                     }
                     return true;
@@ -353,6 +366,9 @@ public class App extends PApplet {
         return false;
     }
 
+    /**
+     * display and update tanks
+     */
     private void displayTanks() {
         for (int i = 0; i < nOfplayers; i++) {
             AbstractTank tank = tanks[i];

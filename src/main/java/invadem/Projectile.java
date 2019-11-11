@@ -36,6 +36,9 @@ public class Projectile extends AbstractObject {
 
     }
 
+    /**
+     * load images of the projectile
+     */
     @Override
     public void loadImages() {
         sprites = new PImage[1];
@@ -51,10 +54,20 @@ public class Projectile extends AbstractObject {
         this.y += dy;
     }
 
+    /**
+     * get the owner of the projectile
+     *
+     * @return the owner
+     */
     public String getOwner() {
         return owner;
     }
 
+    /**
+     * get the attack of the projectile
+     *
+     * @return attack
+     */
     public int getAttack() {
         return attack;
     }
