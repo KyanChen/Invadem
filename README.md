@@ -14,11 +14,11 @@ For player 1, you can use `space bar`, `left key`, `right key` to shoot and move
 
 For player 2, you can use `w`, `a`, `d` to shoot and move the tank.
 
-# How to Build and Run the Program
+# Build and Run
 
 ## Install Gradle
 
-The official page: https://gradle.org/install/
+This program uses [Gradle](https://gradle.org/install/) to build and run.
 
 But the gradle installed in some ways may not work for this program. 
 
@@ -28,7 +28,7 @@ Please follow the instructions below to build and run this program successfully.
 
 #### Install sdkman
 
-**SDKMAN!** is a tool for managing parallel versions of multiple **Software Development Kits** on most Unix based systems. Its official installation page is https://sdkman.io/install.
+[**SDKMAN!**](https://sdkman.io/install) is a tool for managing parallel versions of multiple **Software Development Kits** on most Unix based systems.
 
 You can run following command to install it:
 
@@ -72,7 +72,7 @@ $ sdk use java 8.0.262-zulu
 
 ### Windows
 
-Install https://chocolatey.org/ package manager
+Install [chocolatey](https://chocolatey.org/) package manager
 
 Please make sure you follow a set of instructions that work for your system here https://chocolatey.org/install
 
@@ -112,7 +112,7 @@ $ gradle run
 
 The project contains a number of entities that will need to be modelled within your application. 
 
-The images of these objects are in the folder `src/main/resources`.
+The images of these objects are in the folder [`src/main/resources`](src/main/resources).
 
 **Tank**
 
