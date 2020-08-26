@@ -1,6 +1,7 @@
 package invadem;
 
 import processing.core.PImage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  * the invaders
  */
 public class Invader extends AbstractObject {
+    protected int points;
     private int dx;
     private boolean moved;
     private int nOfSteps;
@@ -16,10 +18,12 @@ public class Invader extends AbstractObject {
         super(x, y, 1, 16, 16);
         nOfSteps = 0;
         dx = 1;
+        points = 100;
     }
 
     /**
      * load invaders
+     *
      * @return the list of invaders
      */
     public static List<Invader> loadInvaders() {
@@ -104,6 +108,10 @@ public class Invader extends AbstractObject {
     public int reverseDir() {
         dx *= -1;
         return dx;
+    }
+
+    public int getPoints() {
+        return points;
     }
 
 }

@@ -4,11 +4,11 @@
 
 When the game starts, you can choose the number of players:
 
-![image-20200808205702221](https://i.loli.net/2020/08/08/Mysozu5ixDRtlPw.png)
+<img src="https://i.loli.net/2020/08/08/Mysozu5ixDRtlPw.png" width="500">
 
 Then you can see the main game screen: 
 
-![](https://i.loli.net/2020/08/08/ce5ZuOmWJNTLIjX.png)
+<img src='https://i.loli.net/2020/08/08/ce5ZuOmWJNTLIjX.png' width=500>
 
 For player 1, you can use `space bar`, `left key`, `right key` to shoot and move the tank.
 
@@ -151,4 +151,34 @@ The goal of the game is for the player to destroy all invaders before either the
 - The computer wins when one of the following conditions have been met:
 
 - An invader reaches the barriers (10px away from the barriers). The tank is hit 3 times and destroyed.
+
+# UML
+
+![](https://i.loli.net/2020/08/26/uRH417A5XhSwnI6.png)
+
+The structure of the program is shown above.
+
+`App` is the entry of the program, which inherits from `PApplet`.
+
+All other classes inherited from `AbstractObject` except for `Barrier`.
+
+`Barrier` is a single class. The barrier is composed of different blocks, which inherits from `AbstractBlock`.
+
+Other relationships are obvious to understand from the UML graph.
+
+# Extension
+
+This part elaborates on the extension in addition to the requirement in the specification.
+
+## Hearts
+
+To display the hit points of the tank visibly, I created a class named `Heart` extending `AbstractObject`. It has 2 sprites, a whole heart and a broken heart.
+
+## More Information Displayed
+
+The game time of the current round, level and the heart of tanks are displayed to the players.
+
+## Double Players Mode
+
+To make the game can be played by two players, I changed the `Tank` to `AbstractTank` and created two sub classes named `Tank1` and `Tank2`, storing different sprites. And use an array of length 2 storing 2 `AbstractTank`objects. Besides, the game asks the player to select the number of players at the beginning of the game, which overrides the `mouseClicked` method.
 

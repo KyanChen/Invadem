@@ -14,13 +14,13 @@ public abstract class AbstractObject {
     protected int y;
     protected PImage[] sprites;
     protected int currentSpriteIndex;
-    protected int blood;
+    protected int hitPoint;
 
 
-    public AbstractObject(int x, int y, int blood, int width, int height) {
+    public AbstractObject(int x, int y, int hitPoint, int width, int height) {
         this.x = x;
         this.y = y;
-        this.blood = blood;
+        this.hitPoint = hitPoint;
         this.width = width;
         this.height = height;
 
@@ -49,21 +49,21 @@ public abstract class AbstractObject {
     public abstract void loadImages();
 
     /**
-     * deduct the blood when hit
+     * deduct the hitPoint when hit
      */
     public void isHit(int deduction) {
-        if (blood > deduction) {
-            blood -= deduction;
+        if (hitPoint > deduction) {
+            hitPoint -= deduction;
         } else {
-            blood = 0;
+            hitPoint = 0;
         }
     }
 
     /**
-     * @return the blood of the object
+     * @return the hitPoint of the object
      */
-    public int getBlood() {
-        return blood;
+    public int getHitPoint() {
+        return hitPoint;
     }
 
     /**
@@ -102,9 +102,9 @@ public abstract class AbstractObject {
     }
 
     /**
-     * @return true if bloods are greater than 0
+     * @return true if hit points are greater than 0
      */
     public boolean isAlive() {
-        return blood > 0;
+        return hitPoint > 0;
     }
 }

@@ -26,9 +26,9 @@ public class Heart extends AbstractObject {
     }
 
     /**
-     * update the index of the current sprite when blood changes
+     * update the index of the current sprite when hitPoint changes
      */
     public void updateSprite() {
-        currentSpriteIndex = blood;
+        currentSpriteIndex = hitPoint;
     }
 }

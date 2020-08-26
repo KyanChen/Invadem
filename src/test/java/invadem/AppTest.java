@@ -3,16 +3,13 @@ package invadem;
 import org.junit.Before;
 import org.junit.Test;
 import processing.core.PApplet;
-
 import java.util.ArrayList;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class AppTest extends App {
     @Before
     public void before() {
         PApplet.runSketch(new String[]{"Test"}, this);
-//        surface.setVisible(false);
         delay(500);
     }
 
@@ -34,22 +31,32 @@ public class AppTest extends App {
         testKeyPressed(nOfPlayers);
         // all invaders are killed then next level
         testKillAllInvaders();
-        // test scores
-        int score = currentScore += 20000;
         // invaders reach the bottom boundary and game over
         testInvadersReachBarriers();
-        // check scores
-        assertEquals(0, currentScore);
-        assertEquals(score, highestScore);
         // tanks are hit and destroyed and game over
         testHitTank(nOfPlayers);
+        // tanks are hit by the power projectile
         testPowerProjectile();
+        // test scores
+        testScore();
         delay(1000);
+    }
+
+    private void testScore() {
+        this.currentScore = 12000;
+        lost = true;
+        frameOfLose = frameCount;
+        delay(2100);
+        assertEquals(0, currentScore);
+        assertEquals(12000, highestScore);
     }
 
     private void testKillAllInvaders() {
         invaders = new ArrayList<>();
+        delay(100);
+        assertTrue(won);
         delay(2100);
+        assertFalse(won);
 
     }
 
@@ -59,7 +66,10 @@ public class AppTest extends App {
                 invader.moveDown();
             }
         }
-        delay(2100);
+        delay(100);
+        assertTrue(lost);
+        delay(2500);
+        assertFalse(lost);
     }
 
     private void testPowerProjectile() {

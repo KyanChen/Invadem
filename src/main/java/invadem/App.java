@@ -325,9 +325,9 @@ public class App extends PApplet {
                     tank.isHit(projectile.getAttack());
                     // show boom effect
                     tank.boom(true, frameCount);
-                    // update bloods of the tank
-                    tank.getHearts()[tank.getBlood()].isHit(1);
-                    tank.getHearts()[tank.getBlood()].updateSprite();
+                    // update hearts of the tank
+                    tank.getHearts()[tank.getHitPoint()].isHit(1);
+                    tank.getHearts()[tank.getHitPoint()].updateSprite();
                     return true;
                 }
             }
@@ -339,16 +339,11 @@ public class App extends PApplet {
                 Invader invader = iterator.next();
                 if (projectile.collides(invader)) {
                     invader.isHit(projectile.getAttack());
-                    if (invader.getBlood() == 0) {
-                        if (invader instanceof PowerInvader || invader instanceof ArmouredInvader) {
-                            currentScore += 250;
-                        } else {
-                            currentScore += 100;
-                        }
+                    if (invader.getHitPoint() == 0) {
+                        currentScore += invader.getPoints();
                         iterator.remove();
                     }
                     return true;
-
                 }
             }
         }
@@ -376,7 +371,7 @@ public class App extends PApplet {
             tank.readKeys(keys);
             tank.boom(false, frameCount);
 
-            // display its blood
+            // display its hitPoint
             stroke(255, 0, 0);
             text("Player " + (i + 1), 10, 45 * (i + 1));
             for (Heart heart : tank.getHearts()) {

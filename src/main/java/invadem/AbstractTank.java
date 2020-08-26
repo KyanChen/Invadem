@@ -13,7 +13,7 @@ public abstract class AbstractTank extends AbstractObject {
 
     public AbstractTank(int x, int y) {
         super(x, y, 3, 22, 16);
-        this.blood = 3;
+        this.hitPoint = 3;
         this.dx = 1;
         hearts = new Heart[3];
         loadHearts();

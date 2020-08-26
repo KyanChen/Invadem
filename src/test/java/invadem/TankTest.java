@@ -2,12 +2,12 @@ package invadem;
 
 import org.junit.Before;
 import org.junit.Test;
-import processing.core.PApplet;
-
+import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+
+
 
 public class TankTest {
     AbstractTank[] tanks;
@@ -31,13 +31,13 @@ public class TankTest {
 
     @Test
     public void testIsHit() {
-        assertEquals(3, tanks[0].getBlood());
+        assertEquals(3, tanks[0].getHitPoint());
         tanks[0].isHit(1);
-        assertEquals(2, tanks[0].getBlood());
+        assertEquals(2, tanks[0].getHitPoint());
         tanks[0].isHit(1);
-        assertEquals(1, tanks[0].getBlood());
+        assertEquals(1, tanks[0].getHitPoint());
         tanks[0].isHit(1);
-        assertEquals(0, tanks[0].getBlood());
+        assertEquals(0, tanks[0].getHitPoint());
         assertFalse(tanks[0].isAlive());
     }
 

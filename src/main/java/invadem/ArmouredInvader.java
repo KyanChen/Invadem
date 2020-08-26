@@ -9,7 +9,8 @@ import processing.core.PImage;
 public class ArmouredInvader extends Invader {
     public ArmouredInvader(int x, int y) {
         super(x, y);
-        blood = 3;
+        hitPoint = 3;
+        points = 250;
     }
 
     /**

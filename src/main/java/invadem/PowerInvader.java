@@ -10,6 +10,7 @@ public class PowerInvader extends Invader {
 
     public PowerInvader(int x, int y) {
         super(x, y);
+        points = 250;
     }
 
     /**
